@@ -1,9 +1,8 @@
 'use strict';
 
-const renderMenu = () => {
-  const node = document.createElement(`section`);
-  node.className = `control__btn-wrap`;
-  node.innerHTML = `
+// Функции, возвращающие разметку элементов
+const returnMenuHtext = () => `
+  <section class="control__btn-wrap">
     <input
       type="radio"
       name="control"
@@ -28,28 +27,23 @@ const renderMenu = () => {
       class="control__input visually-hidden"
     />
     <label for="control__statistic" class="control__label"
-      >STATISTICS</label>`;
-  return node;
-};
+      >STATISTICS</label
+    >
+  </section>`;
 
-const renderSearch = () => {
-  const node = document.createElement(`section`);
-  node.className = `main__search search container`;
-  node.innerHTML = `
+const returnSearchHtext = () => `
+  <section class="main__search search container">
     <input
       type="text"
       id="search__input"
       class="search__input"
       placeholder="START TYPING — SEARCH BY WORD, #HASHTAG OR DATE"
     />
-    <label class="visually-hidden" for="search__input">Search</label>`;
-  return node;
-};
+    <label class="visually-hidden" for="search__input">Search</label>
+  </section>`;
 
-const renderFilters = () => {
-  const node = document.createElement(`section`);
-  node.className = `main__filter filter container`;
-  node.innerHTML = `
+const returnFiltersHtext = () => `
+  <section class="main__filter filter container">
     <input
       type="radio"
       id="filter__all"
@@ -114,14 +108,12 @@ const renderFilters = () => {
       name="filter"
     />
     <label for="filter__archive" class="filter__label"
-      >Archive <span class="filter__archive-count">115</span></label>`;
-  return node;
-};
+      >Archive <span class="filter__archive-count">115</span></label
+    >
+  </section>`;
 
-const renderTaskCard = () => {
-  const node = document.createElement(`article`);
-  node.className = `card`;
-  node.innerHTML = `
+const returnTaskCardHtext = () => `
+  <article class="card">
     <div class="card__form">
       <div class="card__inner">
         <div class="card__control">
@@ -184,14 +176,11 @@ const renderTaskCard = () => {
           </div>
         </div>
       </div>
-    </div>`;
-  return node;
-};
+    </div>
+  </article>`;
 
-const renderTaskCartAdd = () => {
-  const node = document.createElement(`article`);
-  node.className = `card card--edit`;
-  node.innerHTML = `
+const returnTaskCardAddHtext = () => `
+  <article class="card card--edit">
     <form class="card__form" method="get">
       <div class="card__inner">
         <div class="card__control">
@@ -410,32 +399,15 @@ const renderTaskCartAdd = () => {
           <button class="card__delete" type="button">delete</button>
         </div>
       </div>
-    </form>`;
-  return node;
-};
+    </form>
+  </article>`;
 
-const renderLoadMoreButton = () => {
-  const node = document.createElement(`button`);
-  node.setAttribute(`type`, `button`);
-  node.className = `load-more`;
-  node.innerText = `load more`;
-  return node;
-};
+const returnLoadmoreBtnHtext = () => `
+  <button class="load-more" type="button">load more</button>`;
 
-const renderNode = (container, node) => {
-  container.appendChild(node);
-};
-
-const mainContainer = document.querySelector(`main.main`);
-const controlContainer = mainContainer.querySelector(`.main__control`);
-
-renderNode(controlContainer, renderMenu());
-renderNode(mainContainer, renderSearch());
-renderNode(mainContainer, renderFilters());
-
-const cardsSection = document.createElement(`section`);
-cardsSection.className = `board container`;
-cardsSection.innerHTML = `
+// Функция, возвращающая разметку контейнера для карточек задач
+const returnCardsSection = () => `
+  <section class="board container">
     <div class="board__filter-list">
       <a href="#" class="board__filter">SORT BY DEFAULT</a>
       <a href="#" class="board__filter">SORT BY DATE up</a>
@@ -444,12 +416,26 @@ cardsSection.innerHTML = `
 
     <div class="board__tasks">
     </div>
-`;
-renderNode(mainContainer, cardsSection);
+</section>`;
 
-const cardsContainer = cardsSection.querySelector(`.board__tasks`);
-renderNode(cardsContainer, renderTaskCartAdd());
-renderNode(cardsContainer, renderTaskCard());
-renderNode(cardsContainer, renderTaskCard());
-renderNode(cardsContainer, renderTaskCard());
-renderNode(cardsContainer, renderLoadMoreButton());
+// Функция, отрисовывающая разметку в заданный контейнер
+const renderNode = (container, html) => {
+  container.insertAdjacentHTML(`beforeEnd`, html);
+};
+
+const mainContainer = document.querySelector(`main.main`);
+const controlContainer = mainContainer.querySelector(`.main__control`);
+
+// Отрисовка верхних секций: меню, поиска и фильтров
+renderNode(controlContainer, returnMenuHtext());
+renderNode(mainContainer, returnSearchHtext());
+renderNode(mainContainer, returnFiltersHtext());
+
+// Отрисовка контейнера для карточек и самих карточек по заданию
+renderNode(mainContainer, returnCardsSection());
+const cardsContainer = mainContainer.querySelector(`.board__tasks`);
+renderNode(cardsContainer, returnTaskCardAddHtext());
+renderNode(cardsContainer, returnTaskCardHtext());
+renderNode(cardsContainer, returnTaskCardHtext());
+renderNode(cardsContainer, returnTaskCardHtext());
+renderNode(cardsContainer, returnLoadmoreBtnHtext());
