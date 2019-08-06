@@ -420,22 +420,28 @@ const returnCardsSectionHtml = () => `
 
 // Функция, отрисовывающая разметку в заданный контейнер
 const renderNode = (container, html) => {
-  container.insertAdjacentHTML(`beforeend`, html);
+  const node = document.createElement(`div`);
+  node.innerHTML = html;
+  container.appendChild(node.children[0]);
 };
 
 const mainContainer = document.querySelector(`main.main`);
-const controlContainer = mainContainer.querySelector(`.main__control`);
 
-// Отрисовка верхних секций: меню, поиска и фильтров
-renderNode(controlContainer, returnMenuHtml());
-renderNode(mainContainer, returnSearchHtml());
-renderNode(mainContainer, returnFiltersHtml());
+// Отрисовка секции меню
+const menuContainer = mainContainer.querySelector(`.main__control`);
+renderNode(menuContainer, returnMenuHtml);
 
-// Отрисовка контейнера для карточек и самих карточек по заданию
-renderNode(mainContainer, returnCardsSectionHtml());
-const cardsContainer = mainContainer.querySelector(`.board__tasks`);
+// Подготовка и наполнение контейнера для контента
+const mainContentFragment = document.createDocumentFragment();
+renderNode(mainContentFragment, returnSearchHtml());
+renderNode(mainContentFragment, returnFiltersHtml());
+renderNode(mainContentFragment, returnCardsSectionHtml());
+const cardsContainer = mainContentFragment.querySelector(`.board__tasks`);
 renderNode(cardsContainer, returnTaskCardAddHtml());
 renderNode(cardsContainer, returnTaskCardHtml());
 renderNode(cardsContainer, returnTaskCardHtml());
 renderNode(cardsContainer, returnTaskCardHtml());
 renderNode(cardsContainer, returnLoadMoreButtonHtml());
+
+// Добавление контейнера в DOM
+mainContainer.appendChild(mainContentFragment);
