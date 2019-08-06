@@ -425,8 +425,9 @@ const renderNode = (container, html) => {
   container.appendChild(node.children[0]);
 };
 
-// Подготовка и наполнение контейнера для контента
 const mainContainer = document.querySelector(`main.main`);
+
+// Подготовка и наполнение контейнера для контента
 const mainContentFragment = document.createDocumentFragment();
 const menuContainer = document.querySelector(`.main__control`);
 mainContentFragment.appendChild(menuContainer);
