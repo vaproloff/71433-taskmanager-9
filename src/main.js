@@ -425,14 +425,12 @@ const renderNode = (container, html) => {
   container.appendChild(node.children[0]);
 };
 
-const mainContainer = document.querySelector(`main.main`);
-
-// Отрисовка секции меню
-const menuContainer = mainContainer.querySelector(`.main__control`);
-renderNode(menuContainer, returnMenuHtml);
-
 // Подготовка и наполнение контейнера для контента
+const mainContainer = document.querySelector(`main.main`);
 const mainContentFragment = document.createDocumentFragment();
+const menuContainer = document.querySelector(`.main__control`);
+mainContentFragment.appendChild(menuContainer);
+renderNode(menuContainer, returnMenuHtml);
 renderNode(mainContentFragment, returnSearchHtml());
 renderNode(mainContentFragment, returnFiltersHtml());
 renderNode(mainContentFragment, returnCardsSectionHtml());
