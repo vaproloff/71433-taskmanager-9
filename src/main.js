@@ -1,7 +1,7 @@
 'use strict';
 
 // Функции, возвращающие разметку элементов
-const returnMenuHtext = () => `
+const returnMenuHtml = () => `
   <section class="control__btn-wrap">
     <input
       type="radio"
@@ -31,7 +31,7 @@ const returnMenuHtext = () => `
     >
   </section>`;
 
-const returnSearchHtext = () => `
+const returnSearchHtml = () => `
   <section class="main__search search container">
     <input
       type="text"
@@ -42,7 +42,7 @@ const returnSearchHtext = () => `
     <label class="visually-hidden" for="search__input">Search</label>
   </section>`;
 
-const returnFiltersHtext = () => `
+const returnFiltersHtml = () => `
   <section class="main__filter filter container">
     <input
       type="radio"
@@ -112,7 +112,7 @@ const returnFiltersHtext = () => `
     >
   </section>`;
 
-const returnTaskCardHtext = () => `
+const returnTaskCardHtml = () => `
   <article class="card">
     <div class="card__form">
       <div class="card__inner">
@@ -179,7 +179,7 @@ const returnTaskCardHtext = () => `
     </div>
   </article>`;
 
-const returnTaskCardAddHtext = () => `
+const returnTaskCardAddHtml = () => `
   <article class="card card--edit">
     <form class="card__form" method="get">
       <div class="card__inner">
@@ -402,11 +402,11 @@ const returnTaskCardAddHtext = () => `
     </form>
   </article>`;
 
-const returnLoadmoreBtnHtext = () => `
+const returnLoadMoreButtonHtml = () => `
   <button class="load-more" type="button">load more</button>`;
 
 // Функция, возвращающая разметку контейнера для карточек задач
-const returnCardsSection = () => `
+const returnCardsSectionHtml = () => `
   <section class="board container">
     <div class="board__filter-list">
       <a href="#" class="board__filter">SORT BY DEFAULT</a>
@@ -420,22 +420,22 @@ const returnCardsSection = () => `
 
 // Функция, отрисовывающая разметку в заданный контейнер
 const renderNode = (container, html) => {
-  container.insertAdjacentHTML(`beforeEnd`, html);
+  container.insertAdjacentHTML(`beforeend`, html);
 };
 
 const mainContainer = document.querySelector(`main.main`);
 const controlContainer = mainContainer.querySelector(`.main__control`);
 
 // Отрисовка верхних секций: меню, поиска и фильтров
-renderNode(controlContainer, returnMenuHtext());
-renderNode(mainContainer, returnSearchHtext());
-renderNode(mainContainer, returnFiltersHtext());
+renderNode(controlContainer, returnMenuHtml());
+renderNode(mainContainer, returnSearchHtml());
+renderNode(mainContainer, returnFiltersHtml());
 
 // Отрисовка контейнера для карточек и самих карточек по заданию
-renderNode(mainContainer, returnCardsSection());
+renderNode(mainContainer, returnCardsSectionHtml());
 const cardsContainer = mainContainer.querySelector(`.board__tasks`);
-renderNode(cardsContainer, returnTaskCardAddHtext());
-renderNode(cardsContainer, returnTaskCardHtext());
-renderNode(cardsContainer, returnTaskCardHtext());
-renderNode(cardsContainer, returnTaskCardHtext());
-renderNode(cardsContainer, returnLoadmoreBtnHtext());
+renderNode(cardsContainer, returnTaskCardAddHtml());
+renderNode(cardsContainer, returnTaskCardHtml());
+renderNode(cardsContainer, returnTaskCardHtml());
+renderNode(cardsContainer, returnTaskCardHtml());
+renderNode(cardsContainer, returnLoadMoreButtonHtml());
