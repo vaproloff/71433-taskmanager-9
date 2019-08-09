@@ -1,4 +1,4 @@
-# Личный проект «Менеджер задач» [![Build status][travis-image]][travis-url]
+# Учебный проект «Менеджер задач» [![Build status][travis-image]][travis-url]
 
 * Студент: [Константин Пивнов](https://up.htmlacademy.ru/ecmascript/9/user/71433).
 * Наставник: [Александр Бабченко](https://htmlacademy.ru/profile/id619357).
