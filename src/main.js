@@ -5,6 +5,7 @@ import {returnCardsSectionHtml} from './components/cards-section.js';
 import {returnTaskCardHtml} from './components/task-card.js';
 import {returnTaskEditCardHtml} from './components/task-edit-card.js';
 import {returnLoadMoreButtonHtml} from './components/loadmore-button.js';
+import {generateRandomTask} from "./data";
 
 // Функция, отрисовывающая разметку в заданный контейнер
 const renderNode = (container, html) => {
@@ -25,9 +26,9 @@ renderNode(mainContentFragment, returnFiltersHtml());
 renderNode(mainContentFragment, returnCardsSectionHtml());
 const cardsContainer = mainContentFragment.querySelector(`.board__tasks`);
 renderNode(cardsContainer, returnTaskEditCardHtml());
-renderNode(cardsContainer, returnTaskCardHtml());
-renderNode(cardsContainer, returnTaskCardHtml());
-renderNode(cardsContainer, returnTaskCardHtml());
+renderNode(cardsContainer, returnTaskCardHtml(generateRandomTask()));
+renderNode(cardsContainer, returnTaskCardHtml(generateRandomTask()));
+renderNode(cardsContainer, returnTaskCardHtml(generateRandomTask()));
 renderNode(cardsContainer, returnLoadMoreButtonHtml());
 
 // Добавление контейнера в DOM

@@ -1,5 +1,7 @@
-export const returnTaskCardHtml = () => `
-  <article class="card">
+import {formatDate} from "../utils";
+
+export const returnTaskCardHtml = ({description, dueDate, tags, color}) => `
+  <article class="card card--${color}">
     <div class="card__form">
       <div class="card__inner">
         <div class="card__control">
@@ -24,7 +26,7 @@ export const returnTaskCardHtml = () => `
         </div>
   
         <div class="card__textarea-wrap">
-          <p class="card__text">Example default task with default color.</p>
+          <p class="card__text">${description}</p>
         </div>
   
         <div class="card__settings">
@@ -32,31 +34,20 @@ export const returnTaskCardHtml = () => `
             <div class="card__dates">
               <div class="card__date-deadline">
                 <p class="card__input-deadline-wrap">
-                  <span class="card__date">23 September</span>
-                  <span class="card__time">11:15 PM</span>
+                  <span class="card__date">${formatDate(dueDate, {day: `numeric`})} ${formatDate(dueDate, {month: `long`})}</span>
+                  <span class="card__time">${formatDate(dueDate, {hour: `numeric`, minute: `numeric`})}</span>
                 </p>
               </div>
             </div>
   
             <div class="card__hashtag">
               <div class="card__hashtag-list">
-                <span class="card__hashtag-inner">
-                  <span class="card__hashtag-name">
-                    #todo
-                  </span>
-                </span>
-  
-                <span class="card__hashtag-inner">
-                  <span class="card__hashtag-name">
-                    #personal
-                  </span>
-                </span>
-  
-                <span class="card__hashtag-inner">
-                  <span class="card__hashtag-name">
-                    #important
-                  </span>
-                </span>
+                ${Array.from(tags).map((it) => `
+                  <span class="card__hashtag-inner">
+                    <span class="card__hashtag-name">
+                      #${it}
+                    </span>
+                  </span>`).join(``)}
               </div>
             </div>
           </div>
