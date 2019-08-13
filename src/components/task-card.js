@@ -1,7 +1,9 @@
 import {formatDate} from "../utils";
 
-export const returnTaskCardHtml = ({description, dueDate, tags, color}) => `
-  <article class="card card--${color}">
+export const returnTaskCardHtml = ({description, dueDate, tags, color, repeatingDays}) => `
+  <article class="card
+    ${color ? `card--${color}` : ``}
+    ${Object.values(repeatingDays).some((it) => it) ? `card--repeat` : ``}">
     <div class="card__form">
       <div class="card__inner">
         <div class="card__control">
