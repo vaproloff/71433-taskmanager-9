@@ -37,42 +37,42 @@ const generateRandomTask = () => ({
   isArchive: returnTrueOrFalse()
 });
 
-const taskList = new Array(TASKS_NUMBER).fill(``).map(() => generateRandomTask());
+const tasks = new Array(TASKS_NUMBER).fill(``).map(() => generateRandomTask());
 
 const filters = [
   {
     title: `All`,
-    count: taskList.length
+    count: tasks.length
   }, {
     title: `Overdue`,
-    count: taskList.reduce((acc, it) => {
+    count: tasks.reduce((acc, it) => {
       return (it.dueDate < Date.now()) ? ++acc : acc;
     }, 0)
   }, {
     title: `Today`,
-    count: taskList.reduce((acc, it) => {
+    count: tasks.reduce((acc, it) => {
       return (new Date(it.dueDate).toDateString() === new Date(Date.now()).toDateString()) ? ++acc : acc;
     }, 0)
   }, {
     title: `Favorites`,
-    count: taskList.reduce((acc, it) => {
+    count: tasks.reduce((acc, it) => {
       return (it.isFavorite) ? ++acc : acc;
     }, 0)
   }, {
     title: `Repeating`,
-    count: taskList.reduce((acc, it) => {
+    count: tasks.reduce((acc, it) => {
       return (Object.values(it.repeatingDays).some((day) => day)) ? ++acc : acc;
     }, 0)
   }, {
     title: `Tags`,
-    count: taskList.reduce((acc, it) => {
+    count: tasks.reduce((acc, it) => {
       return (it.tags.size) ? ++acc : acc;
     }, 0)
   }, {
     title: `Archive`,
-    count: taskList.reduce((acc, it) => {
+    count: tasks.reduce((acc, it) => {
       return (it.isArchive) ? ++acc : acc;
     }, 0)
   }];
 
-export {COLORS, taskList, filters};
+export {COLORS, tasks, filters};

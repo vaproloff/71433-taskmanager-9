@@ -5,8 +5,7 @@ import {returnCardsSectionHtml} from './components/cards-section.js';
 import {returnTaskCardHtml} from './components/task-card.js';
 import {returnTaskEditCardHtml} from './components/task-edit-card.js';
 import {returnLoadMoreButtonHtml} from './components/loadmore-button.js';
-import {filters} from "./data";
-import {taskList} from "./data";
+import {filters, tasks} from "./data";
 
 const LOAD_TASKS_NUMBER = 8;
 
@@ -15,13 +14,13 @@ const renderNode = (container, place, html) => {
   container.insertAdjacentHTML(place, html);
 };
 
-const renderTaskCards = (tasks) => {
+const renderTaskCards = (taskList) => {
   if (cardsContainer.childElementCount === 0) {
-    renderNode(cardsContainer, `beforeend`, returnTaskEditCardHtml(tasks[0]));
-    tasks.slice(1).forEach((it) => renderNode(cardsContainer, `beforeend`, returnTaskCardHtml(it)));
+    renderNode(cardsContainer, `beforeend`, returnTaskEditCardHtml(taskList[0]));
+    taskList.slice(1).forEach((it) => renderNode(cardsContainer, `beforeend`, returnTaskCardHtml(it)));
   } else {
-    tasks.forEach((it) => renderNode(cardsContainer, `beforeend`, returnTaskCardHtml(it)));
-    if (cardsContainer.childElementCount === taskList.length) {
+    taskList.forEach((it) => renderNode(cardsContainer, `beforeend`, returnTaskCardHtml(it)));
+    if (cardsContainer.childElementCount === tasks.length) {
       loadmoreButton.classList.add(`visually-hidden`);
     }
   }
@@ -40,14 +39,14 @@ renderNode(mainContentFragment, `beforeend`, returnCardsSectionHtml());
 
 const cardsSection = mainContentFragment.querySelector(`section.board`);
 const cardsContainer = cardsSection.querySelector(`div.board__tasks`);
-renderTaskCards(taskList.slice(cardsContainer.childElementCount, cardsContainer.childElementCount + LOAD_TASKS_NUMBER));
+renderTaskCards(tasks.slice(cardsContainer.childElementCount, cardsContainer.childElementCount + LOAD_TASKS_NUMBER));
 renderNode(cardsSection, `beforeend`, returnLoadMoreButtonHtml());
 const loadmoreButton = cardsSection.querySelector(`button.load-more`);
-if (cardsContainer.childElementCount === taskList.length) {
+if (cardsContainer.childElementCount === tasks.length) {
   loadmoreButton.classList.add(`visually-hidden`);
 }
 mainContainer.append(mainContentFragment);
 
 loadmoreButton.addEventListener(`click`, () => {
-  renderTaskCards(taskList.slice(cardsContainer.childElementCount, cardsContainer.childElementCount + 8));
+  renderTaskCards(tasks.slice(cardsContainer.childElementCount, cardsContainer.childElementCount + 8));
 });
