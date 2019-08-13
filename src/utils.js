@@ -1,4 +1,4 @@
-export const returnTrueOrFalse = () => Math.round(Math.random()) === 1;
+export const returnTrueOrFalse = (probability = 1) => Boolean(Math.round(Math.random() * probability));
 
 export const getRandomElementOfArray = (arr) => arr[Math.floor(Math.random() * arr.length)];
 

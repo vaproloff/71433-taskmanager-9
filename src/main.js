@@ -8,45 +8,46 @@ import {returnLoadMoreButtonHtml} from './components/loadmore-button.js';
 import {filters} from "./data";
 import {taskList} from "./data";
 
+const LOAD_TASKS_NUMBER = 8;
+
 // Функция, отрисовывающая разметку в заданный контейнер
-const renderNode = (container, html) => {
-  const node = document.createElement(`div`);
-  node.innerHTML = html;
-  container.appendChild(node.children[0]);
+const renderNode = (container, place, html) => {
+  container.insertAdjacentHTML(place, html);
 };
 
 const renderTaskCards = (tasks) => {
   if (cardsContainer.childElementCount === 0) {
-    renderNode(cardsContainer, returnTaskEditCardHtml(tasks[0]));
-    tasks.slice(1).forEach((it) => renderNode(cardsContainer, returnTaskCardHtml(it)));
+    renderNode(cardsContainer, `beforeend`, returnTaskEditCardHtml(tasks[0]));
+    tasks.slice(1).forEach((it) => renderNode(cardsContainer, `beforeend`, returnTaskCardHtml(it)));
   } else {
-    tasks.forEach((it) => renderNode(cardsContainer, returnTaskCardHtml(it)));
-  }
-  if (cardsContainer.childElementCount === taskList.length) {
-    loadmoreButton.classList.add(`visually-hidden`);
+    tasks.forEach((it) => renderNode(cardsContainer, `beforeend`, returnTaskCardHtml(it)));
+    if (cardsContainer.childElementCount === taskList.length) {
+      loadmoreButton.classList.add(`visually-hidden`);
+    }
   }
 };
 
-const mainContainer = document.querySelector(`main.main`);
-
 // Подготовка и наполнение контейнера для контента
-const mainContentFragment = document.createDocumentFragment();
-const menuContainer = document.querySelector(`.main__control`);
-mainContentFragment.appendChild(menuContainer);
-renderNode(menuContainer, returnMenuHtml());
-renderNode(mainContentFragment, returnSearchHtml());
-renderNode(mainContentFragment, returnFiltersHtml(filters));
-renderNode(mainContentFragment, returnCardsSectionHtml());
-const cardsContainer = mainContentFragment.querySelector(`.board__tasks`);
-renderTaskCards(taskList.slice(cardsContainer.childElementCount, cardsContainer.childElementCount + 8));
+const mainContainer = document.querySelector(`main.main`);
+const menuContainer = document.querySelector(`section.main__control`);
+
+const mainContentFragment = document.createElement(`div`);
+mainContentFragment.append(menuContainer);
+renderNode(menuContainer, `beforeend`, returnMenuHtml());
+renderNode(mainContentFragment, `beforeend`, returnSearchHtml());
+renderNode(mainContentFragment, `beforeend`, returnFiltersHtml(filters));
+renderNode(mainContentFragment, `beforeend`, returnCardsSectionHtml());
+
 const cardsSection = mainContentFragment.querySelector(`section.board`);
-if (cardsContainer.childElementCount < taskList.length) {
-  renderNode(cardsSection, returnLoadMoreButtonHtml());
+const cardsContainer = cardsSection.querySelector(`div.board__tasks`);
+renderTaskCards(taskList.slice(cardsContainer.childElementCount, cardsContainer.childElementCount + LOAD_TASKS_NUMBER));
+renderNode(cardsSection, `beforeend`, returnLoadMoreButtonHtml());
+const loadmoreButton = cardsSection.querySelector(`button.load-more`);
+if (cardsContainer.childElementCount === taskList.length) {
+  loadmoreButton.classList.add(`visually-hidden`);
 }
+mainContainer.append(mainContentFragment);
 
-mainContainer.appendChild(mainContentFragment);
-
-const loadmoreButton = mainContainer.querySelector(`button.load-more`);
 loadmoreButton.addEventListener(`click`, () => {
   renderTaskCards(taskList.slice(cardsContainer.childElementCount, cardsContainer.childElementCount + 8));
 });
