@@ -1,5 +1,6 @@
-import {formatDate} from "../utils";
 import {COLORS} from "../data";
+
+const formatDateToTaskEditCard = (timeStamp) => `${new Date(timeStamp).toLocaleString(`en-US`, {day: `numeric`})} ${new Date(timeStamp).toLocaleString(`en-US`, {month: `long`})} ${new Date(timeStamp).toLocaleString(`en-US`, {hour: `numeric`, minute: `numeric`})}`;
 
 export const returnTaskEditCardHtml = ({description, dueDate, tags, color, repeatingDays, isArchive, isFavorite}) => `
   <article class="card card--edit
@@ -49,7 +50,7 @@ export const returnTaskEditCardHtml = ({description, dueDate, tags, color, repea
                     type="text"
                     placeholder=""
                     name="date"
-                    value="${formatDate(dueDate, {day: `numeric`})} ${formatDate(dueDate, {month: `long`})} ${formatDate(dueDate, {hour: `numeric`, minute: `numeric`})}"
+                    value="${formatDateToTaskEditCard(dueDate)}"
                   />
                 </label>
               </fieldset>
@@ -79,7 +80,7 @@ export const returnTaskEditCardHtml = ({description, dueDate, tags, color, repea
 
             <div class="card__hashtag">
               <div class="card__hashtag-list">
-                ${Array.from(tags).map((it) => `
+                ${[...tags].map((it) => `
                   <span class="card__hashtag-inner">
                     <input
                       type="hidden"

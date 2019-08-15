@@ -1,4 +1,5 @@
-import {formatDate} from "../utils";
+const formatDateToTaskCard = (timeStamp) => `${new Date(timeStamp).toLocaleString(`en-US`, {day: `numeric`})} ${new Date(timeStamp).toLocaleString(`en-US`, {month: `long`})}`;
+const formatTimeToTaskCard = (timeStamp) => new Date(timeStamp).toLocaleString(`en-US`, {hour: `numeric`, minute: `numeric`});
 
 export const returnTaskCardHtml = ({description, dueDate, tags, color, repeatingDays, isArchive, isFavorite}) => `
   <article class="card
@@ -36,15 +37,15 @@ export const returnTaskCardHtml = ({description, dueDate, tags, color, repeating
             <div class="card__dates">
               <div class="card__date-deadline">
                 <p class="card__input-deadline-wrap">
-                  <span class="card__date">${formatDate(dueDate, {day: `numeric`})} ${formatDate(dueDate, {month: `long`})}</span>
-                  <span class="card__time">${formatDate(dueDate, {hour: `numeric`, minute: `numeric`})}</span>
+                  <span class="card__date">${formatDateToTaskCard(dueDate)}</span>
+                  <span class="card__time">${formatTimeToTaskCard(dueDate)}</span>
                 </p>
               </div>
             </div>
   
             <div class="card__hashtag">
               <div class="card__hashtag-list">
-                ${Array.from(tags).map((it) => `
+                ${[...tags].map((it) => `
                   <span class="card__hashtag-inner">
                     <span class="card__hashtag-name">
                       #${it}

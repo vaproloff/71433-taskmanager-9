@@ -9,20 +9,13 @@ import {filters, tasks} from "./data";
 
 const LOAD_TASKS_NUMBER = 8;
 
-// Функция, отрисовывающая разметку в заданный контейнер
 const renderNode = (container, place, html) => {
   container.insertAdjacentHTML(place, html);
 };
-
-const renderTaskCards = (taskList) => {
-  if (cardsContainer.childElementCount === 0) {
-    renderNode(cardsContainer, `beforeend`, returnTaskEditCardHtml(taskList[0]));
-    taskList.slice(1).forEach((it) => renderNode(cardsContainer, `beforeend`, returnTaskCardHtml(it)));
-  } else {
-    taskList.forEach((it) => renderNode(cardsContainer, `beforeend`, returnTaskCardHtml(it)));
-    if (cardsContainer.childElementCount === tasks.length) {
-      loadmoreButton.classList.add(`visually-hidden`);
-    }
+const renderTaskCards = (taskList) => taskList.reduce((acc, it) => acc + returnTaskCardHtml(it), ``);
+const checkTasksAndHideButton = () => {
+  if (cardsContainer.childElementCount === tasks.length) {
+    loadmoreButton.classList.add(`visually-hidden`);
   }
 };
 
@@ -39,14 +32,16 @@ renderNode(mainContentFragment, `beforeend`, returnCardsSectionHtml());
 
 const cardsSection = mainContentFragment.querySelector(`section.board`);
 const cardsContainer = cardsSection.querySelector(`div.board__tasks`);
-renderTaskCards(tasks.slice(cardsContainer.childElementCount, cardsContainer.childElementCount + LOAD_TASKS_NUMBER));
+// Первоначальный рендеринг карточек
+renderNode(cardsContainer, `beforeend`, returnTaskEditCardHtml(tasks[0]));
+renderNode(cardsContainer, `beforeend`, renderTaskCards(tasks.slice(cardsContainer.childElementCount, cardsContainer.childElementCount + LOAD_TASKS_NUMBER - 1)));
 renderNode(cardsSection, `beforeend`, returnLoadMoreButtonHtml());
 const loadmoreButton = cardsSection.querySelector(`button.load-more`);
-if (cardsContainer.childElementCount === tasks.length) {
-  loadmoreButton.classList.add(`visually-hidden`);
-}
+checkTasksAndHideButton();
 mainContainer.append(mainContentFragment);
 
+// Подгрузка карточек по кнопке Loadmore
 loadmoreButton.addEventListener(`click`, () => {
-  renderTaskCards(tasks.slice(cardsContainer.childElementCount, cardsContainer.childElementCount + 8));
+  renderNode(cardsContainer, `beforeend`, renderTaskCards(tasks.slice(cardsContainer.childElementCount, cardsContainer.childElementCount + LOAD_TASKS_NUMBER)));
+  checkTasksAndHideButton();
 });
