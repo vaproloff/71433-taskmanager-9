@@ -1,6 +1,6 @@
 import {COLORS} from "../data";
-
-const formatDateToTaskEditCard = (timeStamp) => `${new Date(timeStamp).toLocaleString(`en-US`, {day: `numeric`})} ${new Date(timeStamp).toLocaleString(`en-US`, {month: `long`})} ${new Date(timeStamp).toLocaleString(`en-US`, {hour: `numeric`, minute: `numeric`})}`;
+import {getFormattedDate} from "../utils";
+import {numericDayOptions, shortTimeOptions, fullMonthOptions} from "./task-card";
 
 export const returnTaskEditCardHtml = ({description, dueDate, tags, color, repeatingDays, isArchive, isFavorite}) => `
   <article class="card card--edit
@@ -50,7 +50,7 @@ export const returnTaskEditCardHtml = ({description, dueDate, tags, color, repea
                     type="text"
                     placeholder=""
                     name="date"
-                    value="${formatDateToTaskEditCard(dueDate)}"
+                    value="${getFormattedDate(dueDate, numericDayOptions, fullMonthOptions, shortTimeOptions)}"
                   />
                 </label>
               </fieldset>

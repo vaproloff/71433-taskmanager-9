@@ -1,5 +1,8 @@
-const formatDateToTaskCard = (timeStamp) => `${new Date(timeStamp).toLocaleString(`en-US`, {day: `numeric`})} ${new Date(timeStamp).toLocaleString(`en-US`, {month: `long`})}`;
-const formatTimeToTaskCard = (timeStamp) => new Date(timeStamp).toLocaleString(`en-US`, {hour: `numeric`, minute: `numeric`});
+import {getFormattedDate} from "../utils";
+
+const numericDayOptions = [`en-US`, {day: `numeric`}];
+const fullMonthOptions = [`en-US`, {month: `long`}];
+const shortTimeOptions = [`en-US`, {hour: `numeric`, minute: `numeric`}];
 
 export const returnTaskCardHtml = ({description, dueDate, tags, color, repeatingDays, isArchive, isFavorite}) => `
   <article class="card
@@ -37,8 +40,8 @@ export const returnTaskCardHtml = ({description, dueDate, tags, color, repeating
             <div class="card__dates">
               <div class="card__date-deadline">
                 <p class="card__input-deadline-wrap">
-                  <span class="card__date">${formatDateToTaskCard(dueDate)}</span>
-                  <span class="card__time">${formatTimeToTaskCard(dueDate)}</span>
+                  <span class="card__date">${getFormattedDate(dueDate, numericDayOptions, fullMonthOptions)}</span>
+                  <span class="card__time">${getFormattedDate(dueDate, shortTimeOptions)}</span>
                 </p>
               </div>
             </div>
@@ -58,3 +61,5 @@ export const returnTaskCardHtml = ({description, dueDate, tags, color, repeating
       </div>
     </div>
   </article>`;
+
+export {numericDayOptions, fullMonthOptions, shortTimeOptions};
