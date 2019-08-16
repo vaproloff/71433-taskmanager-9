@@ -3,7 +3,7 @@ import {getRandomElementOfArray} from "./utils";
 import {getRandomlyReducedArray} from "./utils";
 
 const DAYS_IN_WEEK = 7;
-const TASKS_NUMBER = 5;
+const TASKS_NUMBER = 25;
 const MAX_TAGS_NUMBER = 3;
 const PROBABILITY_COEFFICIENT = 0.6;
 const COLORS = [`black`, `yellow`, `blue`, `green`, `pink`];
