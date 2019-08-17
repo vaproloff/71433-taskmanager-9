@@ -5,30 +5,43 @@ import {returnCardsSectionHtml} from './components/cards-section.js';
 import {returnTaskCardHtml} from './components/task-card.js';
 import {returnTaskEditCardHtml} from './components/task-edit-card.js';
 import {returnLoadMoreButtonHtml} from './components/loadmore-button.js';
+import {filters, tasks} from "./data";
 
-// Функция, отрисовывающая разметку в заданный контейнер
-const renderNode = (container, html) => {
-  const node = document.createElement(`div`);
-  node.innerHTML = html;
-  container.appendChild(node.children[0]);
+const LOAD_TASKS_NUMBER = 8;
+
+const renderNode = (container, place, html) => {
+  container.insertAdjacentHTML(place, html);
+};
+const renderTaskCards = (taskList) => taskList.reduce((acc, it) => acc + returnTaskCardHtml(it), ``);
+const checkTasksAndHideButton = () => {
+  if (cardsContainer.childElementCount === tasks.length) {
+    loadmoreButton.classList.add(`visually-hidden`);
+  }
 };
 
-const mainContainer = document.querySelector(`main.main`);
-
 // Подготовка и наполнение контейнера для контента
-const mainContentFragment = document.createDocumentFragment();
-const menuContainer = document.querySelector(`.main__control`);
-mainContentFragment.appendChild(menuContainer);
-renderNode(menuContainer, returnMenuHtml());
-renderNode(mainContentFragment, returnSearchHtml());
-renderNode(mainContentFragment, returnFiltersHtml());
-renderNode(mainContentFragment, returnCardsSectionHtml());
-const cardsContainer = mainContentFragment.querySelector(`.board__tasks`);
-renderNode(cardsContainer, returnTaskEditCardHtml());
-renderNode(cardsContainer, returnTaskCardHtml());
-renderNode(cardsContainer, returnTaskCardHtml());
-renderNode(cardsContainer, returnTaskCardHtml());
-renderNode(cardsContainer, returnLoadMoreButtonHtml());
+const mainContainer = document.querySelector(`main.main`);
+const menuContainer = document.querySelector(`section.main__control`);
 
-// Добавление контейнера в DOM
-mainContainer.appendChild(mainContentFragment);
+const mainContentFragment = document.createElement(`div`);
+mainContentFragment.append(menuContainer);
+renderNode(menuContainer, `beforeend`, returnMenuHtml());
+renderNode(mainContentFragment, `beforeend`, returnSearchHtml());
+renderNode(mainContentFragment, `beforeend`, returnFiltersHtml(filters));
+renderNode(mainContentFragment, `beforeend`, returnCardsSectionHtml());
+
+const cardsSection = mainContentFragment.querySelector(`section.board`);
+const cardsContainer = cardsSection.querySelector(`div.board__tasks`);
+// Первоначальный рендеринг карточек
+renderNode(cardsContainer, `beforeend`, returnTaskEditCardHtml(tasks[0]));
+renderNode(cardsContainer, `beforeend`, renderTaskCards(tasks.slice(cardsContainer.childElementCount, cardsContainer.childElementCount + LOAD_TASKS_NUMBER - 1)));
+renderNode(cardsSection, `beforeend`, returnLoadMoreButtonHtml());
+const loadmoreButton = cardsSection.querySelector(`button.load-more`);
+checkTasksAndHideButton();
+mainContainer.append(mainContentFragment);
+
+// Подгрузка карточек по кнопке Loadmore
+loadmoreButton.addEventListener(`click`, () => {
+  renderNode(cardsContainer, `beforeend`, renderTaskCards(tasks.slice(cardsContainer.childElementCount, cardsContainer.childElementCount + LOAD_TASKS_NUMBER)));
+  checkTasksAndHideButton();
+});
