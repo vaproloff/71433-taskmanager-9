@@ -43,8 +43,9 @@ export const renderElement = (container, place, element) => {
   }
 };
 
-export const unrenderElement = (element) => {
-  if (element) {
-    element.remove();
-  }
-};
+// Закомментировал пока неиспользуемую функцию
+// export const unrenderElement = (element) => {
+//   if (element) {
+//     element.remove();
+//   }
+// };

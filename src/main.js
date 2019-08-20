@@ -24,7 +24,7 @@ const renderTask = (taskMock, container) => {
   };
   const onEscKeyDown = (evt) => {
     if (evt.key === `Escape` || evt.key === `Esc`) {
-      replaceEditToTask();
+      replaceEditToTask(evt);
     }
   };
   taskEdit.getElement().querySelector(`textarea`).addEventListener(`focus`, () => {

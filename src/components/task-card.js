@@ -19,9 +19,10 @@ class Task {
     return this._element;
   }
 
-  removeElement() {
-    this._element = null;
-  }
+  // Закомментировал пока неиспользуемый метод
+  // removeElement() {
+  //   this._element = null;
+  // }
 
   getTemplate() {
     return `
