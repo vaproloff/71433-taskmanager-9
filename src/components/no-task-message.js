@@ -1,6 +1,6 @@
 import {createElement} from '../utils';
 
-class LoadmoreButton {
+class NoTasksMessage {
   constructor() {
     this._element = null;
   }
@@ -18,8 +18,11 @@ class LoadmoreButton {
 
   getTemplate() {
     return `
-  <button class="load-more" type="button">load more</button>`;
+  <p class="board__no-tasks">
+    Congratulations, all tasks were completed! To create a new click on
+    «add new task» button.
+  </p>`;
   }
 }
 
-export default LoadmoreButton;
+export default NoTasksMessage;
