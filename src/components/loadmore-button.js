@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import {createElement, unrenderElement} from '../utils';
 
 class LoadmoreButton {
   constructor() {
@@ -13,6 +13,7 @@ class LoadmoreButton {
   }
 
   removeElement() {
+    unrenderElement(this._element);
     this._element = null;
   }
 

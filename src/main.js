@@ -2,24 +2,27 @@ import Menu from './components/menu.js';
 import Search from './components/search';
 import Filter from './components/filters';
 import CardsSection from './components/cards-section';
-import LoadmoreButton from './components/loadmore-button';
+import Sorting from './components/sorting';
+import TaskContainer from './components/task-container';
 import Task from './components/task-card.js';
 import TaskEdit from './components/task-edit-card.js';
+import LoadmoreButton from './components/loadmore-button';
+import NoTasksMessage from './components/no-task-message';
 import {filters, tasks} from './data';
 import {renderElement, Position} from './utils';
 
 const LOAD_TASKS_NUMBER = 8;
 
-const renderTask = (taskMock, container) => {
+const renderTask = (taskMock, fragment) => {
   const task = new Task(taskMock);
   const taskEdit = new TaskEdit(taskMock);
   const onEditButtonClick = () => {
-    cardsContainer.replaceChild(taskEdit.getElement(), task.getElement());
+    cardsContainer.getElement().replaceChild(taskEdit.getElement(), task.getElement());
     document.addEventListener(`keydown`, onEscKeyDown);
   };
   const onSaveButtonClick = (evt) => {
     evt.preventDefault();
-    cardsContainer.replaceChild(task.getElement(), taskEdit.getElement());
+    cardsContainer.getElement().replaceChild(task.getElement(), taskEdit.getElement());
     document.removeEventListener(`keydown`, onEscKeyDown);
   };
   const onEscKeyDown = (evt) => {
@@ -36,40 +39,44 @@ const renderTask = (taskMock, container) => {
   task.getElement().querySelector(`.card__btn--edit`).addEventListener(`click`, onEditButtonClick);
   taskEdit.getElement().querySelector(`.card__form`).addEventListener(`submit`, onSaveButtonClick);
 
-  renderElement(container, Position.BEFOREEND, task.getElement());
+  renderElement(fragment, Position.BEFOREEND, task.getElement());
 };
 const renderTaskCardsFragment = (tasksNumber) => {
   const tasksFragment = document.createDocumentFragment();
-  tasks.slice(cardsContainer.childElementCount, cardsContainer.childElementCount + tasksNumber).forEach((it) => renderTask(it, tasksFragment));
-  renderElement(cardsContainer, Position.BEFOREEND, tasksFragment);
+  tasks.slice(cardsContainer.getElement().childElementCount, cardsContainer.getElement().childElementCount + tasksNumber).forEach((it) => renderTask(it, tasksFragment));
+  renderElement(cardsContainer.getElement(), Position.BEFOREEND, tasksFragment);
 };
-const checkTasksAndHideButton = () => {
+const checkTasksAndHideButton = (button) => {
+  const cardsContainer = cardsSection.getElement().querySelector(`.board__tasks`);
   if (cardsContainer.childElementCount === tasks.length) {
-    loadmoreButton.classList.add(`visually-hidden`);
+    button.removeElement();
   }
 };
 
-// Подготовка и наполнение контейнера для контента
 const mainContainer = document.querySelector(`main.main`);
 const menuContainer = document.querySelector(`section.main__control`);
 
 renderElement(menuContainer, Position.BEFOREEND, new Menu().getElement());
 renderElement(mainContainer, Position.BEFOREEND, new Search().getElement());
 renderElement(mainContainer, Position.BEFOREEND, new Filter(filters).getElement());
-renderElement(mainContainer, Position.BEFOREEND, new CardsSection().getElement());
+const cardsSection = new CardsSection();
+renderElement(mainContainer, Position.BEFOREEND, cardsSection.getElement());
+const sorting = new Sorting();
+const cardsContainer = new TaskContainer();
 
-// Первоначальный рендеринг карточек
-const cardsSection = mainContainer.querySelector(`section.board`);
-const cardsContainer = cardsSection.querySelector(`div.board__tasks`);
-renderTaskCardsFragment(LOAD_TASKS_NUMBER);
-
-// Рендеринг кнопки Loadmore
-renderElement(cardsSection, Position.BEFOREEND, new LoadmoreButton().getElement());
-const loadmoreButton = cardsSection.querySelector(`button.load-more`);
-checkTasksAndHideButton();
-
-// Подгрузка карточек по кнопке Loadmore
-loadmoreButton.addEventListener(`click`, () => {
+if (tasks.length) {
+  renderElement(cardsSection.getElement(), Position.BEFOREEND, sorting.getElement());
+  renderElement(cardsSection.getElement(), Position.BEFOREEND, cardsContainer.getElement());
   renderTaskCardsFragment(LOAD_TASKS_NUMBER);
-  checkTasksAndHideButton();
-});
+  if (cardsContainer.getElement().childElementCount < tasks.length) {
+    const loadmoreButton = new LoadmoreButton();
+    renderElement(cardsSection.getElement(), Position.BEFOREEND, loadmoreButton.getElement());
+    loadmoreButton.getElement().addEventListener(`click`, () => {
+      renderTaskCardsFragment(LOAD_TASKS_NUMBER);
+      checkTasksAndHideButton(loadmoreButton);
+    });
+  }
+} else {
+  const noTaskMessage = new NoTasksMessage();
+  renderElement(cardsSection.getElement(), Position.BEFOREEND, noTaskMessage.getElement());
+}

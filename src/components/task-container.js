@@ -1,6 +1,6 @@
 import {createElement, unrenderElement} from '../utils';
 
-class NoTasksMessage {
+class TaskContainer {
   constructor() {
     this._element = null;
   }
@@ -19,11 +19,9 @@ class NoTasksMessage {
 
   getTemplate() {
     return `
-  <p class="board__no-tasks">
-    Congratulations, all tasks were completed! To create a new click on
-    «add new task» button.
-  </p>`;
+      <div class="board__tasks">
+      </div>`;
   }
 }
 
-export default NoTasksMessage;
+export default TaskContainer;
