@@ -1,7 +1,7 @@
 export const DateOption = {
-  NUMERIC_DAY_OPTIONS: [`en-US`, {day: `numeric`}],
-  FULL_MONTH_OPTIONS: [`en-US`, {month: `long`}],
-  SHORT_TIME_OPTIONS: [`en-US`, {hour: `numeric`, minute: `numeric`}]
+  NUMERIC_DAY: [`en-US`, {day: `numeric`}],
+  FULL_MONTH: [`en-US`, {month: `long`}],
+  SHORT_TIME: [`en-US`, {hour: `numeric`, minute: `numeric`}]
 };
 
 export const Position = {

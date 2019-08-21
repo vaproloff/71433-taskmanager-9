@@ -1,4 +1,4 @@
-import {getFormattedDate, createElement, DateOption} from "../utils";
+import {getFormattedDate, createElement, DateOption} from '../utils';
 
 class Task {
   constructor({description, dueDate, tags, color, repeatingDays, isArchive, isFavorite}) {
@@ -19,10 +19,9 @@ class Task {
     return this._element;
   }
 
-  // Закомментировал пока неиспользуемый метод
-  // removeElement() {
-  //   this._element = null;
-  // }
+  removeElement() {
+    this._element = null;
+  }
 
   getTemplate() {
     return `
@@ -61,8 +60,8 @@ class Task {
                 <div class="card__dates">
                   <div class="card__date-deadline">
                     <p class="card__input-deadline-wrap">
-                      <span class="card__date">${getFormattedDate(this._dueDate, DateOption.NUMERIC_DAY_OPTIONS, DateOption.FULL_MONTH_OPTIONS)}</span>
-                      <span class="card__time">${getFormattedDate(this._dueDate, DateOption.SHORT_TIME_OPTIONS)}</span>
+                      <span class="card__date">${getFormattedDate(this._dueDate, DateOption.NUMERIC_DAY, DateOption.FULL_MONTH)}</span>
+                      <span class="card__time">${getFormattedDate(this._dueDate, DateOption.SHORT_TIME)}</span>
                     </p>
                   </div>
                 </div>

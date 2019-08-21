@@ -1,5 +1,5 @@
-import {COLORS} from "../data";
-import {getFormattedDate, DateOption, createElement} from "../utils";
+import {COLORS} from '../data';
+import {getFormattedDate, DateOption, createElement} from '../utils';
 
 class TaskEdit {
   constructor({description, dueDate, tags, color, repeatingDays, isArchive, isFavorite}) {
@@ -17,6 +17,10 @@ class TaskEdit {
       this._element = createElement(this.getTemplate());
     }
     return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
   }
 
   getTemplate() {
@@ -68,7 +72,7 @@ class TaskEdit {
                         type="text"
                         placeholder=""
                         name="date"
-                        value="${getFormattedDate(this._dueDate, DateOption.NUMERIC_DAY_OPTIONS, DateOption.FULL_MONTH_OPTIONS, DateOption.SHORT_TIME_OPTIONS)}"
+                        value="${getFormattedDate(this._dueDate, DateOption.NUMERIC_DAY, DateOption.FULL_MONTH, DateOption.SHORT_TIME)}"
                       />
                     </label>
                   </fieldset>

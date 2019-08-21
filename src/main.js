@@ -1,12 +1,12 @@
-import Menu from './components/menu.js';
-import Search from "./components/search";
-import Filter from "./components/filters";
-import CardsSection from "./components/cards-section";
+import {returnMenuHtml} from './components/menu.js';
+import {returnSearchHtml} from './components/search';
+import {returnFiltersHtml} from './components/filters';
+import {returnCardsSectionHtml} from './components/cards-section';
+import {returnLoadmoreButtonHtml} from './components/loadmore-button';
 import Task from './components/task-card.js';
 import TaskEdit from './components/task-edit-card.js';
-import LoadmoreButton from "./components/loadmore-button";
-import {filters, tasks} from "./data";
-import {renderElement, Position} from "./utils";
+import {filters, tasks} from './data';
+import {renderElement, Position, createElement} from './utils';
 
 const LOAD_TASKS_NUMBER = 8;
 
@@ -55,10 +55,10 @@ const menuContainer = document.querySelector(`section.main__control`);
 
 const mainContentFragment = document.createDocumentFragment();
 renderElement(mainContentFragment, Position.BEFOREEND, menuContainer);
-renderElement(menuContainer, Position.BEFOREEND, new Menu().getElement());
-renderElement(mainContentFragment, Position.BEFOREEND, new Search().getElement());
-renderElement(mainContentFragment, Position.BEFOREEND, new Filter(filters).getElement());
-renderElement(mainContentFragment, Position.BEFOREEND, new CardsSection().getElement());
+renderElement(menuContainer, Position.BEFOREEND, createElement(returnMenuHtml()));
+renderElement(mainContentFragment, Position.BEFOREEND, createElement(returnSearchHtml()));
+renderElement(mainContentFragment, Position.BEFOREEND, createElement(returnFiltersHtml(filters)));
+renderElement(mainContentFragment, Position.BEFOREEND, createElement(returnCardsSectionHtml()));
 
 // Первоначальный рендеринг карточек
 const cardsSection = mainContentFragment.querySelector(`section.board`);
@@ -66,7 +66,7 @@ const cardsContainer = cardsSection.querySelector(`div.board__tasks`);
 renderTaskCardsFragment(LOAD_TASKS_NUMBER);
 
 // Рендеринг кнопки Loadmore
-renderElement(cardsSection, Position.BEFOREEND, new LoadmoreButton().getElement());
+renderElement(cardsSection, Position.BEFOREEND, createElement(returnLoadmoreButtonHtml()));
 const loadmoreButton = cardsSection.querySelector(`button.load-more`);
 checkTasksAndHideButton();
 
