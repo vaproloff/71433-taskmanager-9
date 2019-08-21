@@ -1,6 +1,4 @@
-import {getRandomBoolean} from "./utils";
-import {getRandomElementOfArray} from "./utils";
-import {getRandomlyReducedArray} from "./utils";
+import {getRandomBoolean, getRandomElementOfArray, getRandomlyReducedArray} from './utils';
 
 const DAYS_IN_WEEK = 7;
 const TASKS_NUMBER = 25;
