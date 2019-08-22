@@ -1,5 +1,5 @@
 import {COLORS} from '../data';
-import {getFormattedDate, DateOption, createElement} from '../utils';
+import {getFormattedDate, DateOption, createElement, unrenderElement} from '../utils';
 
 class TaskEdit {
   constructor({description, dueDate, tags, color, repeatingDays, isArchive, isFavorite}) {
@@ -20,6 +20,7 @@ class TaskEdit {
   }
 
   removeElement() {
+    unrenderElement(this._element);
     this._element = null;
   }
 

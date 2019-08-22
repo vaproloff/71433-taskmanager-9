@@ -1,6 +1,6 @@
 import {createElement, unrenderElement} from '../utils';
 
-class LoadmoreButton {
+class Sorting {
   constructor() {
     this._element = null;
   }
@@ -19,8 +19,12 @@ class LoadmoreButton {
 
   getTemplate() {
     return `
-  <button class="load-more" type="button">load more</button>`;
+      <div class="board__filter-list">
+        <a href="#" class="board__filter">SORT BY DEFAULT</a>
+        <a href="#" class="board__filter">SORT BY DATE up</a>
+        <a href="#" class="board__filter">SORT BY DATE down</a>
+      </div>`;
   }
 }
 
-export default LoadmoreButton;
+export default Sorting;

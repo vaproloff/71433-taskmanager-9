@@ -1,6 +1,6 @@
 import {createElement, unrenderElement} from '../utils';
 
-class LoadmoreButton {
+class TaskContainer {
   constructor() {
     this._element = null;
   }
@@ -19,8 +19,9 @@ class LoadmoreButton {
 
   getTemplate() {
     return `
-  <button class="load-more" type="button">load more</button>`;
+      <div class="board__tasks">
+      </div>`;
   }
 }
 
-export default LoadmoreButton;
+export default TaskContainer;

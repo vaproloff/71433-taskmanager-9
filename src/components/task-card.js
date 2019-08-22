@@ -1,4 +1,4 @@
-import {getFormattedDate, createElement, DateOption} from '../utils';
+import {getFormattedDate, createElement, DateOption, unrenderElement} from '../utils';
 
 class Task {
   constructor({description, dueDate, tags, color, repeatingDays, isArchive, isFavorite}) {
@@ -20,6 +20,7 @@ class Task {
   }
 
   removeElement() {
+    unrenderElement(this._element);
     this._element = null;
   }
 
