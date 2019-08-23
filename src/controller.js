@@ -64,15 +64,48 @@ class Controller {
     renderElement(fragment, Position.BEFOREEND, task.getElement());
   }
 
-  _renderTaskCardsFragment(tasksNumber) {
+  _renderTaskCardsFragment(tasks, tasksNumber) {
     const tasksFragment = document.createDocumentFragment();
-    this._tasks.slice(this._taskContainer.getElement().childElementCount, this._taskContainer.getElement().childElementCount + tasksNumber).forEach((it) => this._renderTask(it, tasksFragment));
+    tasks.slice(this._taskContainer.getElement().childElementCount, this._taskContainer.getElement().childElementCount + tasksNumber).forEach((it) => this._renderTask(it, tasksFragment));
     renderElement(this._taskContainer.getElement(), Position.BEFOREEND, tasksFragment);
+  }
+
+  _checkTasksAndShowButton() {
+    if (this._taskContainer.getElement().childElementCount < this._tasks.length) {
+      renderElement(this._cardsSection.getElement(), Position.BEFOREEND, this._loadmoreButton.getElement());
+      this._loadmoreButton.getElement().addEventListener(`click`, () => {
+        this._renderTaskCardsFragment(this._tasks, LOAD_TASKS_NUMBER);
+        this._checkTasksAndHideButton();
+      });
+    }
   }
 
   _checkTasksAndHideButton() {
     if (this._taskContainer.getElement().childElementCount === this._tasks.length) {
       this._loadmoreButton.removeElement();
+    }
+  }
+
+  _onSortingClick(evt) {
+    evt.preventDefault();
+    if (evt.target.tagName === `A`) {
+      this._uneditedTask = null;
+      this._editingTask = null;
+      const currentTasksCount = this._taskContainer.getElement().childElementCount;
+      this._taskContainer.getElement().innerHTML = ``;
+      let sortedTasks;
+      switch (evt.target.dataset.sortType) {
+        case `date-up`:
+          sortedTasks = this._tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
+          break;
+        case `date-down`:
+          sortedTasks = this._tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
+          break;
+        case `default`:
+          sortedTasks = this._tasks;
+          break;
+      }
+      this._renderTaskCardsFragment(sortedTasks, currentTasksCount);
     }
   }
 
@@ -85,14 +118,9 @@ class Controller {
     if (this._tasks.length) {
       renderElement(this._cardsSection.getElement(), Position.BEFOREEND, this._sorting.getElement());
       renderElement(this._cardsSection.getElement(), Position.BEFOREEND, this._taskContainer.getElement());
-      this._renderTaskCardsFragment(LOAD_TASKS_NUMBER);
-      if (this._cardsSection.getElement().childElementCount < this._tasks.length) {
-        renderElement(this._cardsSection.getElement(), Position.BEFOREEND, this._loadmoreButton.getElement());
-        this._loadmoreButton.getElement().addEventListener(`click`, () => {
-          this._renderTaskCardsFragment(LOAD_TASKS_NUMBER);
-          this._checkTasksAndHideButton(this._loadmoreButton);
-        });
-      }
+      this._renderTaskCardsFragment(this._tasks, LOAD_TASKS_NUMBER);
+      this._sorting.getElement().addEventListener(`click`, (evt) => this._onSortingClick(evt));
+      this._checkTasksAndShowButton();
     } else {
       renderElement(this._cardsSection.getElement(), Position.BEFOREEND, this._noTaskMessage.getElement());
     }
