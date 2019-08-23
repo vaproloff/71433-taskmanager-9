@@ -12,9 +12,9 @@ import {Position, renderElement} from './utils';
 import {LOAD_TASKS_NUMBER} from './data';
 
 class Controller {
-  constructor(filters, tasks) {
-    this._mainContainer = document.querySelector(`main.main`);
-    this._menuContainer = document.querySelector(`section.main__control`);
+  constructor(mainContainer, filters, tasks) {
+    this._mainContainer = mainContainer;
+    this._menuContainer = mainContainer.querySelector(`section.main__control`);
     this._menu = new Menu();
     this._search = new Search();
     this._filter = new Filter(filters);
