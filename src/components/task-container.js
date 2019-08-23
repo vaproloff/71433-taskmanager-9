@@ -1,20 +1,8 @@
-import {createElement, unrenderElement} from '../utils';
+import AbstractComponent from './abstract-component';
 
-class TaskContainer {
+class TaskContainer extends AbstractComponent {
   constructor() {
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    unrenderElement(this._element);
-    this._element = null;
+    super();
   }
 
   getTemplate() {

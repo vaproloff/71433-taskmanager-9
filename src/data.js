@@ -1,8 +1,9 @@
 import {getRandomBoolean, getRandomElementOfArray, getRandomlyReducedArray} from './utils';
 
 const DAYS_IN_WEEK = 7;
-const TASKS_NUMBER = 9;
+const TASKS_NUMBER = 25;
 const MAX_TAGS_NUMBER = 3;
+const LOAD_TASKS_NUMBER = 8;
 const PROBABILITY_COEFFICIENT = 0.6;
 const COLORS = [`black`, `yellow`, `blue`, `green`, `pink`];
 const TAGS = [`homework`, `theory`, `practice`, `intensive`, `keks`, `lecture`, `project`, `graduation`];
@@ -27,7 +28,7 @@ const generateRandomTask = () => ({
   description: getRandomElementOfArray(TASK_DESCRIPTIONS),
   dueDate: Date.now() + Math.trunc(convertDaysToMilliseconds(Math.random() * DAYS_IN_WEEK * 2 - DAYS_IN_WEEK)),
   repeatingDays: getRepeatingDays(SHORT_WEEK_DAYS),
-  tags: new Set(getRandomlyReducedArray(TAGS, Math.round(Math.random() * MAX_TAGS_NUMBER))),
+  tags: [...new Set(getRandomlyReducedArray(TAGS, Math.round(Math.random() * MAX_TAGS_NUMBER)))],
   color: getRandomElementOfArray(COLORS),
   isFavorite: getRandomBoolean(),
   isArchive: getRandomBoolean()
@@ -71,4 +72,4 @@ const filters = [
     }, 0)
   }];
 
-export {COLORS, tasks, filters};
+export {COLORS, tasks, filters, LOAD_TASKS_NUMBER};

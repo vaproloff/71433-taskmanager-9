@@ -1,27 +1,10 @@
+import Task from './task-card';
 import {COLORS} from '../data';
-import {getFormattedDate, DateOption, createElement, unrenderElement} from '../utils';
+import {getFormattedDate, DateOption} from '../utils';
 
-class TaskEdit {
-  constructor({description, dueDate, tags, color, repeatingDays, isArchive, isFavorite}) {
-    this._description = description;
-    this._dueDate = dueDate;
-    this._tags = tags;
-    this._color = color;
-    this._repeatingDays = repeatingDays;
-    this._isArchive = isArchive;
-    this._isFavorite = isFavorite;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    unrenderElement(this._element);
-    this._element = null;
+class TaskEdit extends Task {
+  constructor(task) {
+    super(task);
   }
 
   getTemplate() {
@@ -103,7 +86,7 @@ class TaskEdit {
     
                 <div class="card__hashtag">
                   <div class="card__hashtag-list">
-                    ${[...this._tags].map((it) => `
+                    ${this._tags.map((it) => `
                       <span class="card__hashtag-inner">
                         <input
                           type="hidden"
