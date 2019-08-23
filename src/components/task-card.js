@@ -1,7 +1,9 @@
-import {getFormattedDate, createElement, DateOption, unrenderElement} from '../utils';
+import AbstractComponent from './abstract-component';
+import {getFormattedDate, DateOption} from '../utils';
 
-class Task {
+class Task extends AbstractComponent {
   constructor({description, dueDate, tags, color, repeatingDays, isArchive, isFavorite}) {
+    super();
     this._description = description;
     this._dueDate = dueDate;
     this._tags = tags;
@@ -9,19 +11,6 @@ class Task {
     this._repeatingDays = repeatingDays;
     this._isArchive = isArchive;
     this._isFavorite = isFavorite;
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    unrenderElement(this._element);
-    this._element = null;
   }
 
   getTemplate() {
@@ -69,7 +58,7 @@ class Task {
       
                 <div class="card__hashtag">
                   <div class="card__hashtag-list">
-                    ${[...this._tags].map((it) => `
+                    ${this._tags.map((it) => `
                       <span class="card__hashtag-inner">
                         <span class="card__hashtag-name">
                           #${it}
