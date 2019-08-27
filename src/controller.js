@@ -24,6 +24,7 @@ class Controller {
     this._loadmoreButton = new LoadmoreButton();
     this._noTaskMessage = new NoTasksMessage();
     this._tasks = tasks;
+    this._sortedTasks = this._tasks;
     this._uneditedTask = null;
     this._editingTask = null;
   }
@@ -64,15 +65,47 @@ class Controller {
     renderElement(fragment, Position.BEFOREEND, task.getElement());
   }
 
-  _renderTaskCardsFragment(tasksNumber) {
+  _renderTaskCardsFragment(tasks, tasksNumber) {
     const tasksFragment = document.createDocumentFragment();
-    this._tasks.slice(this._taskContainer.getElement().childElementCount, this._taskContainer.getElement().childElementCount + tasksNumber).forEach((it) => this._renderTask(it, tasksFragment));
+    tasks.slice(this._taskContainer.getElement().childElementCount, this._taskContainer.getElement().childElementCount + tasksNumber).forEach((it) => this._renderTask(it, tasksFragment));
     renderElement(this._taskContainer.getElement(), Position.BEFOREEND, tasksFragment);
   }
 
+  _checkTasksAndShowButton() {
+    if (this._taskContainer.getElement().childElementCount < this._sortedTasks.length) {
+      renderElement(this._cardsSection.getElement(), Position.BEFOREEND, this._loadmoreButton.getElement());
+      this._loadmoreButton.getElement().addEventListener(`click`, () => {
+        this._renderTaskCardsFragment(this._sortedTasks, LOAD_TASKS_NUMBER);
+        this._checkTasksAndHideButton();
+      });
+    }
+  }
+
   _checkTasksAndHideButton() {
-    if (this._taskContainer.getElement().childElementCount === this._tasks.length) {
+    if (this._taskContainer.getElement().childElementCount === this._sortedTasks.length) {
       this._loadmoreButton.removeElement();
+    }
+  }
+
+  _onSortingClick(evt) {
+    evt.preventDefault();
+    if (evt.target.tagName === `A`) {
+      this._uneditedTask = null;
+      this._editingTask = null;
+      const currentTasksCount = this._taskContainer.getElement().childElementCount;
+      this._taskContainer.clearTasks();
+      switch (evt.target.dataset.sortType) {
+        case `date-up`:
+          this._sortedTasks = this._tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
+          break;
+        case `date-down`:
+          this._sortedTasks = this._tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
+          break;
+        case `default`:
+          this._sortedTasks = this._tasks;
+          break;
+      }
+      this._renderTaskCardsFragment(this._sortedTasks, currentTasksCount);
     }
   }
 
@@ -82,17 +115,12 @@ class Controller {
     renderElement(this._mainContainer, Position.BEFOREEND, this._filter.getElement());
     renderElement(this._mainContainer, Position.BEFOREEND, this._cardsSection.getElement());
 
-    if (this._tasks.length) {
+    if (this._sortedTasks.length) {
       renderElement(this._cardsSection.getElement(), Position.BEFOREEND, this._sorting.getElement());
       renderElement(this._cardsSection.getElement(), Position.BEFOREEND, this._taskContainer.getElement());
-      this._renderTaskCardsFragment(LOAD_TASKS_NUMBER);
-      if (this._cardsSection.getElement().childElementCount < this._tasks.length) {
-        renderElement(this._cardsSection.getElement(), Position.BEFOREEND, this._loadmoreButton.getElement());
-        this._loadmoreButton.getElement().addEventListener(`click`, () => {
-          this._renderTaskCardsFragment(LOAD_TASKS_NUMBER);
-          this._checkTasksAndHideButton(this._loadmoreButton);
-        });
-      }
+      this._renderTaskCardsFragment(this._sortedTasks, LOAD_TASKS_NUMBER);
+      this._sorting.getElement().addEventListener(`click`, (evt) => this._onSortingClick(evt));
+      this._checkTasksAndShowButton();
     } else {
       renderElement(this._cardsSection.getElement(), Position.BEFOREEND, this._noTaskMessage.getElement());
     }

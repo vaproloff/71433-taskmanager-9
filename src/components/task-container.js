@@ -5,6 +5,12 @@ class TaskContainer extends AbstractComponent {
     super();
   }
 
+  clearTasks() {
+    if (this._element) {
+      this._element.innerHTML = ``;
+    }
+  }
+
   getTemplate() {
     return `
       <div class="board__tasks">
