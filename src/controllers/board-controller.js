@@ -1,17 +1,16 @@
-import Menu from './components/menu';
-import Search from './components/search';
-import Filter from './components/filters';
-import CardsSection from './components/cards-section';
-import Sorting from './components/sorting';
-import TaskContainer from './components/task-container';
-import Task from './components/task-card';
-import TaskEdit from './components/task-edit-card';
-import LoadmoreButton from './components/loadmore-button';
-import NoTasksMessage from './components/no-task-message';
-import {Position, renderElement} from './utils';
-import {LOAD_TASKS_NUMBER} from './data';
+import Menu from './../components/menu';
+import Search from './../components/search';
+import Filter from './../components/filters';
+import CardsSection from './../components/cards-section';
+import Sorting from './../components/sorting';
+import TaskContainer from './../components/task-container';
+import LoadmoreButton from './../components/loadmore-button';
+import NoTasksMessage from './../components/no-task-message';
+import {Position, renderElement} from './../utils';
+import {LOAD_TASKS_NUMBER} from './../data';
+import TaskController from './task-controller';
 
-class Controller {
+class BoardController {
   constructor(mainContainer, filters, tasks) {
     this._mainContainer = mainContainer;
     this._menuContainer = mainContainer.querySelector(`section.main__control`);
@@ -25,44 +24,10 @@ class Controller {
     this._noTaskMessage = new NoTasksMessage();
     this._tasks = tasks;
     this._sortedTasks = this._tasks;
-    this._uneditedTask = null;
-    this._editingTask = null;
   }
 
-  _renderTask(taskMock, fragment) {
-    const task = new Task(taskMock);
-    const taskEdit = new TaskEdit(taskMock);
-    const onEditButtonClick = () => {
-      if (this._editingTask) {
-        this._taskContainer.getElement().replaceChild(this._uneditedTask.getElement(), this._editingTask.getElement());
-      }
-      this._uneditedTask = task;
-      this._editingTask = taskEdit;
-      this._taskContainer.getElement().replaceChild(taskEdit.getElement(), task.getElement());
-      document.addEventListener(`keydown`, onEscKeyDown);
-    };
-    const onSaveButtonClick = (evt) => {
-      evt.preventDefault();
-      this._uneditedTask = null;
-      this._editingTask = null;
-      this._taskContainer.getElement().replaceChild(task.getElement(), taskEdit.getElement());
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    };
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        onSaveButtonClick(evt);
-      }
-    };
-    taskEdit.getElement().querySelector(`textarea`).addEventListener(`focus`, () => {
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-    taskEdit.getElement().querySelector(`textarea`).addEventListener(`blur`, () => {
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
-    task.getElement().querySelector(`.card__btn--edit`).addEventListener(`click`, onEditButtonClick);
-    taskEdit.getElement().querySelector(`.card__form`).addEventListener(`submit`, onSaveButtonClick);
-
-    renderElement(fragment, Position.BEFOREEND, task.getElement());
+  _renderTask(task, fragment) {
+    const taskController = new TaskController(this._taskContainer, fragment, task);
   }
 
   _renderTaskCardsFragment(tasks, tasksNumber) {
@@ -90,8 +55,6 @@ class Controller {
   _onSortingClick(evt) {
     evt.preventDefault();
     if (evt.target.tagName === `A`) {
-      this._uneditedTask = null;
-      this._editingTask = null;
       const currentTasksCount = this._taskContainer.getElement().childElementCount;
       this._taskContainer.clearTasks();
       switch (evt.target.dataset.sortType) {
@@ -127,4 +90,4 @@ class Controller {
   }
 }
 
-export default Controller;
+export default BoardController;

@@ -1,6 +1,6 @@
 import {filters, tasks} from './data';
-import Controller from './controller';
+import BoardController from './controllers/board-controller';
 
 const mainContainer = document.querySelector(`main.main`);
-const boardController = new Controller(mainContainer, filters, tasks);
+const boardController = new BoardController(mainContainer, filters, tasks);
 boardController.init();
