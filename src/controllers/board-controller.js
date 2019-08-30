@@ -11,19 +11,19 @@ import {LOAD_TASKS_NUMBER} from './../data';
 import TaskController from './task-controller';
 
 class BoardController {
-  constructor(mainContainer, filters, tasks) {
+  constructor(mainContainer, tasks) {
     this._mainContainer = mainContainer;
     this._menuContainer = mainContainer.querySelector(`section.main__control`);
     this._menu = new Menu();
     this._search = new Search();
-    this._filter = new Filter(filters);
+    this._filter = new Filter(tasks);
     this._cardsSection = new CardsSection();
     this._sorting = new Sorting();
     this._taskContainer = new TaskContainer();
     this._loadmoreButton = new LoadmoreButton();
     this._noTaskMessage = new NoTasksMessage();
     this._tasks = tasks;
-    this._sortedTasks = this._tasks;
+    this._sortedTasks = this._tasks.filter((it) => !it.isArchive);
     this._renderedTaskCount = 0;
 
     this._subscriptions = [];
@@ -33,9 +33,11 @@ class BoardController {
 
   _onDataChange(newTask, oldTask) {
     this._tasks[this._tasks.indexOf(oldTask)] = newTask;
+    this._filter.countFilters(this._tasks);
     this._sortedTasks[this._sortedTasks.indexOf(oldTask)] = newTask;
+    this._sortedTasks = this._sortedTasks.filter((it) => !it.isArchive);
 
-    this._rerenderTaskBoard(this._sortedTasks, this._renderedTaskCount);
+    this._renderTaskBoard(this._sortedTasks, this._renderedTaskCount);
   }
 
   _onChangeView() {
@@ -53,9 +55,13 @@ class BoardController {
     renderElement(this._taskContainer.getElement(), Position.BEFOREEND, tasksFragment);
   }
 
-  _rerenderTaskBoard(tasks, taskCount) {
+  _renderTaskBoard(tasks, taskCount) {
     this._taskContainer.clearTasks();
     this._renderTaskCardsFragment(tasks, taskCount);
+
+    this._filter.removeElement();
+    renderElement(this._mainContainer.querySelector(`.main__search`), Position.AFTEREND, this._filter.getElement());
+    this._checkTasksAndHideButton();
   }
 
   _checkTasksAndShowButton() {
@@ -89,20 +95,19 @@ class BoardController {
           this._sortedTasks = this._tasks;
           break;
       }
-      this._rerenderTaskBoard(this._sortedTasks, this._renderedTaskCount);
+      this._renderTaskBoard(this._sortedTasks, this._renderedTaskCount);
     }
   }
 
   init() {
     renderElement(this._menuContainer, Position.BEFOREEND, this._menu.getElement());
     renderElement(this._mainContainer, Position.BEFOREEND, this._search.getElement());
-    renderElement(this._mainContainer, Position.BEFOREEND, this._filter.getElement());
     renderElement(this._mainContainer, Position.BEFOREEND, this._cardsSection.getElement());
 
     if (this._sortedTasks.length) {
       renderElement(this._cardsSection.getElement(), Position.BEFOREEND, this._sorting.getElement());
       renderElement(this._cardsSection.getElement(), Position.BEFOREEND, this._taskContainer.getElement());
-      this._renderTaskCardsFragment(this._sortedTasks, LOAD_TASKS_NUMBER);
+      this._renderTaskBoard(this._sortedTasks, LOAD_TASKS_NUMBER);
       this._renderedTaskCount = this._taskContainer.getElement().childElementCount;
       this._sorting.getElement().addEventListener(`click`, (evt) => this._onSortingClick(evt));
       this._checkTasksAndShowButton();

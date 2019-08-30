@@ -36,40 +36,4 @@ const generateRandomTask = () => ({
 
 const tasks = new Array(TASKS_NUMBER).fill(``).map(() => generateRandomTask());
 
-const filters = [
-  {
-    title: `All`,
-    count: tasks.length
-  }, {
-    title: `Overdue`,
-    count: tasks.reduce((acc, it) => {
-      return (it.dueDate < Date.now()) ? ++acc : acc;
-    }, 0)
-  }, {
-    title: `Today`,
-    count: tasks.reduce((acc, it) => {
-      return (new Date(it.dueDate).toDateString() === new Date(Date.now()).toDateString()) ? ++acc : acc;
-    }, 0)
-  }, {
-    title: `Favorites`,
-    count: tasks.reduce((acc, it) => {
-      return (it.isFavorite) ? ++acc : acc;
-    }, 0)
-  }, {
-    title: `Repeating`,
-    count: tasks.reduce((acc, it) => {
-      return (Object.values(it.repeatingDays).some((day) => day)) ? ++acc : acc;
-    }, 0)
-  }, {
-    title: `Tags`,
-    count: tasks.reduce((acc, it) => {
-      return (it.tags.size) ? ++acc : acc;
-    }, 0)
-  }, {
-    title: `Archive`,
-    count: tasks.reduce((acc, it) => {
-      return (it.isArchive) ? ++acc : acc;
-    }, 0)
-  }];
-
-export {COLORS, tasks, filters, LOAD_TASKS_NUMBER, SHORT_WEEK_DAYS};
+export {COLORS, tasks, LOAD_TASKS_NUMBER, SHORT_WEEK_DAYS};

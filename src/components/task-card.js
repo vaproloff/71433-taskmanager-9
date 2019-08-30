@@ -24,12 +24,12 @@ class Task extends AbstractComponent {
               <button type="button" class="card__btn card__btn--edit">
                 edit
               </button>
-              <button type="button" class="card__btn card__btn--archive ${this._isFavorite ? `card__btn--disabled` : ``}">
+              <button type="button" class="card__btn card__btn--archive ${this._isArchive ? `card__btn--disabled` : ``}">
                 archive
               </button>
               <button
                 type="button"
-                class="card__btn card__btn--favorites ${this._isArchive ? `card__btn--disabled` : ``}"
+                class="card__btn card__btn--favorites ${this._isFavorite ? `card__btn--disabled` : ``}"
               >
                 favorites
               </button>
@@ -47,25 +47,28 @@ class Task extends AbstractComponent {
       
             <div class="card__settings">
               <div class="card__details">
-                <div class="card__dates">
-                  <div class="card__date-deadline">
-                    <p class="card__input-deadline-wrap">
-                      <span class="card__date">${getFormattedDate(this._dueDate, DateOption.NUMERIC_DAY, DateOption.FULL_MONTH)}</span>
-                      <span class="card__time">${getFormattedDate(this._dueDate, DateOption.SHORT_TIME)}</span>
-                    </p>
-                  </div>
-                </div>
-      
-                <div class="card__hashtag">
-                  <div class="card__hashtag-list">
-                    ${this._tags.map((it) => `
-                      <span class="card__hashtag-inner">
-                        <span class="card__hashtag-name">
-                          #${it}
-                        </span>
-                      </span>`).join(``)}
-                  </div>
-                </div>
+                ${this._dueDate ? `
+                  <div class="card__dates">
+                    <div class="card__date-deadline">
+                      <p class="card__input-deadline-wrap">
+                        <span class="card__date">${getFormattedDate(this._dueDate, DateOption.NUMERIC_DAY, DateOption.FULL_MONTH)}</span>
+                        <span class="card__time">${getFormattedDate(this._dueDate, DateOption.SHORT_TIME)}</span>
+                      </p>
+                    </div>
+                  </div>` : ``}
+                
+                ${this._tags.length ? `
+                  <div class="card__hashtag">
+                    <div class="card__hashtag-list">
+                      ${this._tags.map((it) => `
+                        <span class="card__hashtag-inner">
+                          <span class="card__hashtag-name">
+                            #${it}
+                          </span>
+                        </span>`).join(``)}
+                    </div>
+                  </div>` : ``}
+
               </div>
             </div>
           </div>

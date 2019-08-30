@@ -6,6 +6,7 @@ export const DateOption = {
 
 export const Position = {
   AFTERBEGIN: `afterbegin`,
+  AFTEREND: `afterend`,
   BEFOREEND: `beforeend`
 };
 
@@ -36,6 +37,9 @@ export const renderElement = (container, place, element) => {
   switch (place) {
     case Position.AFTERBEGIN:
       container.prepend(element);
+      break;
+    case Position.AFTEREND:
+      container.after(element);
       break;
     case Position.BEFOREEND:
       container.append(element);
