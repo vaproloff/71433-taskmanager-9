@@ -72,4 +72,4 @@ const filters = [
     }, 0)
   }];
 
-export {COLORS, tasks, filters, LOAD_TASKS_NUMBER};
+export {COLORS, tasks, filters, LOAD_TASKS_NUMBER, SHORT_WEEK_DAYS};

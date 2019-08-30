@@ -24,10 +24,27 @@ class BoardController {
     this._noTaskMessage = new NoTasksMessage();
     this._tasks = tasks;
     this._sortedTasks = this._tasks;
+    this._renderedTaskCount = 0;
+
+    this._subscriptions = [];
+    this._onDataChange = this._onDataChange.bind(this);
+    this._onChangeView = this._onChangeView.bind(this);
+  }
+
+  _onDataChange(newTask, oldTask) {
+    this._tasks[this._tasks.indexOf(oldTask)] = newTask;
+    this._sortedTasks[this._sortedTasks.indexOf(oldTask)] = newTask;
+
+    this._rerenderTaskBoard(this._sortedTasks, this._renderedTaskCount);
+  }
+
+  _onChangeView() {
+    this._subscriptions.forEach((it) => it());
   }
 
   _renderTask(task, fragment) {
-    const taskController = new TaskController(this._taskContainer, fragment, task);
+    const taskController = new TaskController(this._taskContainer, fragment, task, this._onDataChange, this._onChangeView);
+    this._subscriptions.push(taskController.setDefaultView.bind(taskController));
   }
 
   _renderTaskCardsFragment(tasks, tasksNumber) {
@@ -36,11 +53,17 @@ class BoardController {
     renderElement(this._taskContainer.getElement(), Position.BEFOREEND, tasksFragment);
   }
 
+  _rerenderTaskBoard(tasks, taskCount) {
+    this._taskContainer.clearTasks();
+    this._renderTaskCardsFragment(tasks, taskCount);
+  }
+
   _checkTasksAndShowButton() {
     if (this._taskContainer.getElement().childElementCount < this._sortedTasks.length) {
       renderElement(this._cardsSection.getElement(), Position.BEFOREEND, this._loadmoreButton.getElement());
       this._loadmoreButton.getElement().addEventListener(`click`, () => {
         this._renderTaskCardsFragment(this._sortedTasks, LOAD_TASKS_NUMBER);
+        this._renderedTaskCount = this._taskContainer.getElement().childElementCount;
         this._checkTasksAndHideButton();
       });
     }
@@ -55,8 +78,6 @@ class BoardController {
   _onSortingClick(evt) {
     evt.preventDefault();
     if (evt.target.tagName === `A`) {
-      const currentTasksCount = this._taskContainer.getElement().childElementCount;
-      this._taskContainer.clearTasks();
       switch (evt.target.dataset.sortType) {
         case `date-up`:
           this._sortedTasks = this._tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
@@ -68,7 +89,7 @@ class BoardController {
           this._sortedTasks = this._tasks;
           break;
       }
-      this._renderTaskCardsFragment(this._sortedTasks, currentTasksCount);
+      this._rerenderTaskBoard(this._sortedTasks, this._renderedTaskCount);
     }
   }
 
@@ -82,6 +103,7 @@ class BoardController {
       renderElement(this._cardsSection.getElement(), Position.BEFOREEND, this._sorting.getElement());
       renderElement(this._cardsSection.getElement(), Position.BEFOREEND, this._taskContainer.getElement());
       this._renderTaskCardsFragment(this._sortedTasks, LOAD_TASKS_NUMBER);
+      this._renderedTaskCount = this._taskContainer.getElement().childElementCount;
       this._sorting.getElement().addEventListener(`click`, (evt) => this._onSortingClick(evt));
       this._checkTasksAndShowButton();
     } else {
