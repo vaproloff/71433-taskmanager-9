@@ -1,3 +1,13 @@
+export const REPEATING_DAYS = {
+  'mo': false,
+  'tu': false,
+  'we': false,
+  'th': false,
+  'fr': false,
+  'sa': false,
+  'su': false
+};
+
 export const DateOption = {
   NUMERIC_DAY: [`en-US`, {day: `numeric`}],
   FULL_MONTH: [`en-US`, {month: `long`}],

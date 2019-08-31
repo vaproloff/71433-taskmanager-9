@@ -1,4 +1,5 @@
 import AbstractComponent from './abstract-component';
+import {Position, renderElement} from '../utils';
 
 const DEFAULT_FILTER = `All`;
 
@@ -6,40 +7,46 @@ class Filter extends AbstractComponent {
   constructor(tasks) {
     super();
     this._tasks = tasks;
-    this._filters = null;
-    this.countFilters(this._tasks);
+    this._filters = this._getFilters(this._tasks);
   }
 
-  countFilters(tasks) {
+  refreshFilters(tasks) {
+    this._filters = this._getFilters(tasks);
+    const place = document.querySelector(`.main__search`);
+    this.removeElement();
+    renderElement(place, Position.AFTEREND, this.getElement());
+  }
+
+  _getFilters(tasks) {
+    const tasksAll = tasks.filter((it) => !it.isArchive);
     const tasksArchived = tasks.filter((it) => it.isArchive);
-    tasks = tasks.filter((it) => !it.isArchive);
-    this._filters = [
+    return [
       {
         title: `All`,
-        count: tasks.length
+        count: tasksAll.length
       }, {
         title: `Overdue`,
-        count: tasks.reduce((acc, it) => {
+        count: tasksAll.reduce((acc, it) => {
           return (it.dueDate < Date.now()) ? ++acc : acc;
         }, 0)
       }, {
         title: `Today`,
-        count: tasks.reduce((acc, it) => {
+        count: tasksAll.reduce((acc, it) => {
           return (new Date(it.dueDate).toDateString() === new Date(Date.now()).toDateString()) ? ++acc : acc;
         }, 0)
       }, {
         title: `Favorites`,
-        count: tasks.reduce((acc, it) => {
+        count: tasksAll.reduce((acc, it) => {
           return (it.isFavorite) ? ++acc : acc;
         }, 0)
       }, {
         title: `Repeating`,
-        count: tasks.reduce((acc, it) => {
+        count: tasksAll.reduce((acc, it) => {
           return (Object.values(it.repeatingDays).some((day) => day)) ? ++acc : acc;
         }, 0)
       }, {
         title: `Tags`,
-        count: tasks.reduce((acc, it) => {
+        count: tasksAll.reduce((acc, it) => {
           return (it.tags.size) ? ++acc : acc;
         }, 0)
       }, {

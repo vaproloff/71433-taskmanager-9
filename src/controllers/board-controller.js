@@ -33,7 +33,7 @@ class BoardController {
 
   _onDataChange(newTask, oldTask) {
     this._tasks[this._tasks.indexOf(oldTask)] = newTask;
-    this._filter.countFilters(this._tasks);
+    this._filter.refreshFilters(this._tasks);
     this._sortedTasks[this._sortedTasks.indexOf(oldTask)] = newTask;
     this._sortedTasks = this._sortedTasks.filter((it) => !it.isArchive);
 
@@ -51,16 +51,15 @@ class BoardController {
 
   _renderTaskCardsFragment(tasks, tasksNumber) {
     const tasksFragment = document.createDocumentFragment();
-    tasks.slice(this._taskContainer.getElement().childElementCount, this._taskContainer.getElement().childElementCount + tasksNumber).forEach((it) => this._renderTask(it, tasksFragment));
+    const startTaskIndex = this._taskContainer.getElement().childElementCount;
+    const endTaskIndex = this._taskContainer.getElement().childElementCount + tasksNumber;
+    tasks.slice(startTaskIndex, endTaskIndex).forEach((it) => this._renderTask(it, tasksFragment));
     renderElement(this._taskContainer.getElement(), Position.BEFOREEND, tasksFragment);
   }
 
   _renderTaskBoard(tasks, taskCount) {
     this._taskContainer.clearTasks();
     this._renderTaskCardsFragment(tasks, taskCount);
-
-    this._filter.removeElement();
-    renderElement(this._mainContainer.querySelector(`.main__search`), Position.AFTEREND, this._filter.getElement());
     this._checkTasksAndHideButton();
   }
 
@@ -102,6 +101,7 @@ class BoardController {
   init() {
     renderElement(this._menuContainer, Position.BEFOREEND, this._menu.getElement());
     renderElement(this._mainContainer, Position.BEFOREEND, this._search.getElement());
+    renderElement(this._mainContainer, Position.BEFOREEND, this._filter.getElement());
     renderElement(this._mainContainer, Position.BEFOREEND, this._cardsSection.getElement());
 
     if (this._sortedTasks.length) {

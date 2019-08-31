@@ -1,6 +1,6 @@
 import Task from './../components/task-card';
 import TaskEdit from './../components/task-edit-card';
-import {createElement, Position, renderElement} from './../utils';
+import {createElement, Position, renderElement, REPEATING_DAYS} from './../utils';
 import {COLORS} from '../data';
 
 class TaskController {
@@ -41,15 +41,7 @@ class TaskController {
         repeatingDays: formData.getAll(`repeat`).reduce((acc, it) => {
           acc[it] = true;
           return acc;
-        }, {
-          'mo': false,
-          'tu': false,
-          'we': false,
-          'th': false,
-          'fr': false,
-          'sa': false,
-          'su': false
-        }),
+        }, Object.assign({}, REPEATING_DAYS)),
         tags: [...new Set(formData.getAll(`hashtag`))],
         color: formData.get(`color`),
         isFavorite: this._taskData.isFavorite,
@@ -72,11 +64,8 @@ class TaskController {
     const onDateTogglerClick = () => {
       const dateField = this._taskEdit.getElement().querySelector(`.card__date-deadline`);
       dateField.disabled = !dateField.disabled;
-      if (dateField.disabled) {
-        this._taskEdit.getElement().querySelector(`.card__date-status`).innerText = `NO`;
-      } else {
-        this._taskEdit.getElement().querySelector(`.card__date-status`).innerText = `YES`;
-      }
+      const dateStatusNode = this._taskEdit.getElement().querySelector(`.card__date-status`);
+      dateStatusNode.innerText = dateField.disabled ? `NO` : `YES`;
       dateField.querySelector(`.card__date`).value = null;
     };
     const onRepeatTogglerClick = () => {
