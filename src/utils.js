@@ -1,3 +1,13 @@
+export const REPEATING_DAYS = {
+  'mo': false,
+  'tu': false,
+  'we': false,
+  'th': false,
+  'fr': false,
+  'sa': false,
+  'su': false
+};
+
 export const DateOption = {
   NUMERIC_DAY: [`en-US`, {day: `numeric`}],
   FULL_MONTH: [`en-US`, {month: `long`}],
@@ -6,6 +16,7 @@ export const DateOption = {
 
 export const Position = {
   AFTERBEGIN: `afterbegin`,
+  AFTEREND: `afterend`,
   BEFOREEND: `beforeend`
 };
 
@@ -36,6 +47,9 @@ export const renderElement = (container, place, element) => {
   switch (place) {
     case Position.AFTERBEGIN:
       container.prepend(element);
+      break;
+    case Position.AFTEREND:
+      container.after(element);
       break;
     case Position.BEFOREEND:
       container.append(element);

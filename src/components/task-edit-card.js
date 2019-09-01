@@ -5,6 +5,34 @@ import {getFormattedDate, DateOption} from '../utils';
 class TaskEdit extends Task {
   constructor(task) {
     super(task);
+
+    this._subscribeOnClosingHashtag();
+  }
+
+  addHashtag(hashtag) {
+    return `
+    <span class="card__hashtag-inner">
+      <input
+        type="hidden"
+        name="hashtag"
+        value="${hashtag}"
+        class="card__hashtag-hidden-input"
+      />
+      <p class="card__hashtag-name">
+        #${hashtag}
+      </p>
+      <button type="button" class="card__hashtag-delete">
+        delete
+      </button>
+    </span>`;
+  }
+
+  _subscribeOnClosingHashtag() {
+    this.getElement().querySelector(`.card__hashtag-list`).addEventListener(`click`, (evt) => {
+      if (evt.target.className === `card__hashtag-delete`) {
+        evt.target.parentElement.remove();
+      }
+    });
   }
 
   getTemplate() {
@@ -49,7 +77,7 @@ class TaskEdit extends Task {
                     date: <span class="card__date-status">${this._dueDate ? `yes` : `no`}</span>
                   </button>
     
-                  <fieldset class="card__date-deadline">
+                  <fieldset class="card__date-deadline" ${this._dueDate ? `` : `disabled`}>
                     <label class="card__input-deadline-wrap">
                       <input
                         class="card__date"
@@ -65,7 +93,7 @@ class TaskEdit extends Task {
                     repeat:<span class="card__repeat-status">${Object.values(this._repeatingDays).some((it) => it) ? `yes` : `no`}</span>
                   </button>
     
-                  <fieldset class="card__repeat-days">
+                  <fieldset class="card__repeat-days" ${Object.values(this._repeatingDays).some((it) => it) ? `` : `disabled`}>
                     <div class="card__repeat-days-inner">
                       ${Object.keys(this._repeatingDays).map((it) => `
                         <input
@@ -86,21 +114,7 @@ class TaskEdit extends Task {
     
                 <div class="card__hashtag">
                   <div class="card__hashtag-list">
-                    ${this._tags.map((it) => `
-                      <span class="card__hashtag-inner">
-                        <input
-                          type="hidden"
-                          name="hashtag"
-                          value="repeat"
-                          class="card__hashtag-hidden-input"
-                        />
-                        <p class="card__hashtag-name">
-                          #${it}
-                        </p>
-                        <button type="button" class="card__hashtag-delete">
-                          delete
-                        </button>
-                      </span>`).join(``)}
+                    ${this._tags.map((it) => this.addHashtag(it)).join(``)}
                   </div>
     
                   <label>

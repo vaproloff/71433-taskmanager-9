@@ -1,4 +1,4 @@
-import {getRandomBoolean, getRandomElementOfArray, getRandomlyReducedArray} from './utils';
+import {getRandomBoolean, getRandomElementOfArray, getRandomlyReducedArray, REPEATING_DAYS} from './utils';
 
 const DAYS_IN_WEEK = 7;
 const TASKS_NUMBER = 25;
@@ -7,7 +7,6 @@ const LOAD_TASKS_NUMBER = 8;
 const PROBABILITY_COEFFICIENT = 0.6;
 const COLORS = [`black`, `yellow`, `blue`, `green`, `pink`];
 const TAGS = [`homework`, `theory`, `practice`, `intensive`, `keks`, `lecture`, `project`, `graduation`];
-const SHORT_WEEK_DAYS = [`Mo`, `Tu`, `We`, `Th`, `Fr`, `Sa`, `Su`];
 const TASK_DESCRIPTIONS = [
   `Прослушать лекцию`,
   `Изучить теорию`,
@@ -19,15 +18,15 @@ const TASK_DESCRIPTIONS = [
 ];
 
 const convertDaysToMilliseconds = (days) => days * 24 * 60 * 60 * 1000;
-const getRepeatingDays = (days) => days.reduce((acc, it) => {
+const getRepeatingDays = (days) => Object.keys(days).reduce((acc, it) => {
   acc[it] = getRandomBoolean(PROBABILITY_COEFFICIENT);
   return acc;
-}, {});
+}, Object.assign({}, days));
 
 const generateRandomTask = () => ({
   description: getRandomElementOfArray(TASK_DESCRIPTIONS),
   dueDate: Date.now() + Math.trunc(convertDaysToMilliseconds(Math.random() * DAYS_IN_WEEK * 2 - DAYS_IN_WEEK)),
-  repeatingDays: getRepeatingDays(SHORT_WEEK_DAYS),
+  repeatingDays: getRepeatingDays(REPEATING_DAYS),
   tags: [...new Set(getRandomlyReducedArray(TAGS, Math.round(Math.random() * MAX_TAGS_NUMBER)))],
   color: getRandomElementOfArray(COLORS),
   isFavorite: getRandomBoolean(),
@@ -36,40 +35,4 @@ const generateRandomTask = () => ({
 
 const tasks = new Array(TASKS_NUMBER).fill(``).map(() => generateRandomTask());
 
-const filters = [
-  {
-    title: `All`,
-    count: tasks.length
-  }, {
-    title: `Overdue`,
-    count: tasks.reduce((acc, it) => {
-      return (it.dueDate < Date.now()) ? ++acc : acc;
-    }, 0)
-  }, {
-    title: `Today`,
-    count: tasks.reduce((acc, it) => {
-      return (new Date(it.dueDate).toDateString() === new Date(Date.now()).toDateString()) ? ++acc : acc;
-    }, 0)
-  }, {
-    title: `Favorites`,
-    count: tasks.reduce((acc, it) => {
-      return (it.isFavorite) ? ++acc : acc;
-    }, 0)
-  }, {
-    title: `Repeating`,
-    count: tasks.reduce((acc, it) => {
-      return (Object.values(it.repeatingDays).some((day) => day)) ? ++acc : acc;
-    }, 0)
-  }, {
-    title: `Tags`,
-    count: tasks.reduce((acc, it) => {
-      return (it.tags.size) ? ++acc : acc;
-    }, 0)
-  }, {
-    title: `Archive`,
-    count: tasks.reduce((acc, it) => {
-      return (it.isArchive) ? ++acc : acc;
-    }, 0)
-  }];
-
-export {COLORS, tasks, filters, LOAD_TASKS_NUMBER};
+export {COLORS, tasks, LOAD_TASKS_NUMBER};
