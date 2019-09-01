@@ -2,6 +2,10 @@ import Task from './../components/task-card';
 import TaskEdit from './../components/task-edit-card';
 import {createElement, Position, renderElement, REPEATING_DAYS} from './../utils';
 import {COLORS} from '../data';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/themes/light.css';
+import moment from 'moment';
 
 class TaskController {
   constructor(taskContainer, fragment, taskData, onDataChange, onChangeView) {
@@ -12,6 +16,15 @@ class TaskController {
     this._taskEdit = new TaskEdit(taskData);
     this._onDataChange = onDataChange;
     this._onChangeView = onChangeView;
+
+    this._taskEditCalendar = flatpickr(this._taskEdit.getElement().querySelector(`.card__date`), {
+      altInput: false,
+      allowInput: true,
+      defaultDate: this._taskData.dueDate,
+      altFormat: `j F h:i K`,
+      dateFormat: `j F h:i K`,
+      enableTime: true
+    });
 
     this.init();
   }
@@ -37,7 +50,7 @@ class TaskController {
       const formData = new FormData(this._taskEdit.getElement().querySelector(`.card__form`));
       const newTaskData = {
         description: formData.get(`text`),
-        dueDate: new Date(formData.get(`date`)).setFullYear(2019),
+        dueDate: formData.get(`date`) ? moment(formData.get(`date`)) : null,
         repeatingDays: formData.getAll(`repeat`).reduce((acc, it) => {
           acc[it] = true;
           return acc;
@@ -125,6 +138,10 @@ class TaskController {
     if (this._taskContainer.getElement().contains(this._taskEdit.getElement())) {
       this._taskContainer.getElement().replaceChild(this._task.getElement(), this._taskEdit.getElement());
     }
+  }
+
+  clearFlatpickr() {
+    this._taskEditCalendar.destroy();
   }
 }
 

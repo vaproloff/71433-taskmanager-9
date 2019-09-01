@@ -27,6 +27,7 @@ class BoardController {
     this._renderedTaskCount = 0;
 
     this._subscriptions = [];
+    this._flatpickrs = [];
     this._onDataChange = this._onDataChange.bind(this);
     this._onChangeView = this._onChangeView.bind(this);
   }
@@ -37,6 +38,7 @@ class BoardController {
     this._sortedTasks[this._sortedTasks.indexOf(oldTask)] = newTask;
     this._sortedTasks = this._sortedTasks.filter((it) => !it.isArchive);
 
+    this._flatpickrs.forEach((it) => it());
     this._renderTaskBoard(this._sortedTasks, this._renderedTaskCount);
   }
 
@@ -47,6 +49,7 @@ class BoardController {
   _renderTask(task, fragment) {
     const taskController = new TaskController(this._taskContainer, fragment, task, this._onDataChange, this._onChangeView);
     this._subscriptions.push(taskController.setDefaultView.bind(taskController));
+    this._flatpickrs.push(taskController.clearFlatpickr.bind(taskController));
   }
 
   _renderTaskCardsFragment(tasks, tasksNumber) {

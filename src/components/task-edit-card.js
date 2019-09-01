@@ -1,6 +1,6 @@
 import Task from './task-card';
 import {COLORS} from '../data';
-import {getFormattedDate, DateOption} from '../utils';
+import moment from 'moment';
 
 class TaskEdit extends Task {
   constructor(task) {
@@ -84,7 +84,7 @@ class TaskEdit extends Task {
                         type="text"
                         placeholder=""
                         name="date"
-                        value="${getFormattedDate(this._dueDate, DateOption.NUMERIC_DAY, DateOption.FULL_MONTH, DateOption.SHORT_TIME)}"
+                        value="${moment(this._dueDate).format(`D MMMM hh:mm A`)}"
                       />
                     </label>
                   </fieldset>
