@@ -47,7 +47,7 @@ class BoardController {
   }
 
   _renderTask(task, fragment) {
-    const taskController = new TaskController(this._taskContainer, fragment, task, this._onDataChange, this._onChangeView);
+    const taskController = new TaskController(this._taskContainer, fragment, task, this._onDataChange, this._onChangeView, this._onDateOff);
     this._subscriptions.push(taskController.setDefaultView.bind(taskController));
     this._flatpickrs.push(taskController.clearFlatpickr.bind(taskController));
   }
@@ -88,13 +88,13 @@ class BoardController {
     if (evt.target.tagName === `A`) {
       switch (evt.target.dataset.sortType) {
         case `date-up`:
-          this._sortedTasks = this._tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
+          this._sortedTasks = this._sortedTasks.slice().sort((a, b) => a.dueDate - b.dueDate);
           break;
         case `date-down`:
-          this._sortedTasks = this._tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
+          this._sortedTasks = this._sortedTasks.slice().sort((a, b) => b.dueDate - a.dueDate);
           break;
         case `default`:
-          this._sortedTasks = this._tasks;
+          this._sortedTasks = this._tasks.filter((it) => !it.isArchive);
           break;
       }
       this._renderTaskBoard(this._sortedTasks, this._renderedTaskCount);

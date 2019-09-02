@@ -17,14 +17,9 @@ class TaskController {
     this._onDataChange = onDataChange;
     this._onChangeView = onChangeView;
 
-    this._taskEditCalendar = flatpickr(this._taskEdit.getElement().querySelector(`.card__date`), {
-      altInput: false,
-      allowInput: true,
-      defaultDate: this._taskData.dueDate,
-      altFormat: `j F h:i K`,
-      dateFormat: `j F h:i K`,
-      enableTime: true
-    });
+    if (this._taskData.dueDate) {
+      this._getFlatpickrCalendar();
+    }
 
     this.init();
   }
@@ -50,7 +45,7 @@ class TaskController {
       const formData = new FormData(this._taskEdit.getElement().querySelector(`.card__form`));
       const newTaskData = {
         description: formData.get(`text`),
-        dueDate: formData.get(`date`) ? moment(formData.get(`date`)) : null,
+        dueDate: formData.get(`date`) ? moment(`${moment().year()} ${formData.get(`date`)}`, `YYYY D MMMM h:mm A`).valueOf() : null,
         repeatingDays: formData.getAll(`repeat`).reduce((acc, it) => {
           acc[it] = true;
           return acc;
@@ -80,6 +75,11 @@ class TaskController {
       const dateStatusNode = this._taskEdit.getElement().querySelector(`.card__date-status`);
       dateStatusNode.innerText = dateField.disabled ? `NO` : `YES`;
       dateField.querySelector(`.card__date`).value = null;
+      if (dateField.disabled) {
+        this._taskEditCalendar.destroy();
+      } else {
+        this._getFlatpickrCalendar();
+      }
     };
     const onRepeatTogglerClick = () => {
       const repeatField = this._taskEdit.getElement().querySelector(`.card__repeat-days`);
@@ -132,6 +132,16 @@ class TaskController {
     this._taskEdit.getElement().querySelector(`.card__hashtag-input`).addEventListener(`keydown`, onTagEnter);
 
     renderElement(this._fragment, Position.BEFOREEND, this._task.getElement());
+  }
+
+  _getFlatpickrCalendar() {
+    this._taskEditCalendar = flatpickr(this._taskEdit.getElement().querySelector(`.card__date`), {
+      altInput: false,
+      allowInput: true,
+      defaultDate: this._taskData.dueDate,
+      dateFormat: `j F h:i K`,
+      enableTime: true
+    });
   }
 
   setDefaultView() {
