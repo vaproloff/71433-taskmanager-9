@@ -2,6 +2,10 @@ import Task from './../components/task-card';
 import TaskEdit from './../components/task-edit-card';
 import {createElement, Position, renderElement, REPEATING_DAYS} from './../utils';
 import {COLORS} from '../data';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/themes/light.css';
+import moment from 'moment';
 
 class TaskController {
   constructor(taskContainer, fragment, taskData, onDataChange, onChangeView) {
@@ -12,6 +16,10 @@ class TaskController {
     this._taskEdit = new TaskEdit(taskData);
     this._onDataChange = onDataChange;
     this._onChangeView = onChangeView;
+
+    if (this._taskData.dueDate) {
+      this._getFlatpickrCalendar();
+    }
 
     this.init();
   }
@@ -37,7 +45,7 @@ class TaskController {
       const formData = new FormData(this._taskEdit.getElement().querySelector(`.card__form`));
       const newTaskData = {
         description: formData.get(`text`),
-        dueDate: new Date(formData.get(`date`)).setFullYear(2019),
+        dueDate: formData.get(`date`) ? moment(`${moment().year()} ${formData.get(`date`)}`, `YYYY D MMMM h:mm A`).valueOf() : null,
         repeatingDays: formData.getAll(`repeat`).reduce((acc, it) => {
           acc[it] = true;
           return acc;
@@ -67,6 +75,11 @@ class TaskController {
       const dateStatusNode = this._taskEdit.getElement().querySelector(`.card__date-status`);
       dateStatusNode.innerText = dateField.disabled ? `NO` : `YES`;
       dateField.querySelector(`.card__date`).value = null;
+      if (dateField.disabled) {
+        this._taskEditCalendar.destroy();
+      } else {
+        this._getFlatpickrCalendar();
+      }
     };
     const onRepeatTogglerClick = () => {
       const repeatField = this._taskEdit.getElement().querySelector(`.card__repeat-days`);
@@ -121,10 +134,24 @@ class TaskController {
     renderElement(this._fragment, Position.BEFOREEND, this._task.getElement());
   }
 
+  _getFlatpickrCalendar() {
+    this._taskEditCalendar = flatpickr(this._taskEdit.getElement().querySelector(`.card__date`), {
+      altInput: false,
+      allowInput: true,
+      defaultDate: this._taskData.dueDate,
+      dateFormat: `j F h:i K`,
+      enableTime: true
+    });
+  }
+
   setDefaultView() {
     if (this._taskContainer.getElement().contains(this._taskEdit.getElement())) {
       this._taskContainer.getElement().replaceChild(this._task.getElement(), this._taskEdit.getElement());
     }
+  }
+
+  clearFlatpickr() {
+    this._taskEditCalendar.destroy();
   }
 }
 

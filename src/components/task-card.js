@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract-component';
-import {getFormattedDate, DateOption} from '../utils';
+import moment from 'moment';
 
 class Task extends AbstractComponent {
   constructor({description, dueDate, tags, color, repeatingDays, isArchive, isFavorite}) {
@@ -51,8 +51,8 @@ class Task extends AbstractComponent {
                   <div class="card__dates">
                     <div class="card__date-deadline">
                       <p class="card__input-deadline-wrap">
-                        <span class="card__date">${getFormattedDate(this._dueDate, DateOption.NUMERIC_DAY, DateOption.FULL_MONTH)}</span>
-                        <span class="card__time">${getFormattedDate(this._dueDate, DateOption.SHORT_TIME)}</span>
+                        <span class="card__date">${moment(this._dueDate).format(`D MMMM`)}</span>
+                        <span class="card__time">${moment(this._dueDate).format(`hh:mm A`)}</span>
                       </p>
                     </div>
                   </div>` : ``}

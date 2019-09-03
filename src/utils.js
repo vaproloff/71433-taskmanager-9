@@ -8,12 +8,6 @@ export const REPEATING_DAYS = {
   'su': false
 };
 
-export const DateOption = {
-  NUMERIC_DAY: [`en-US`, {day: `numeric`}],
-  FULL_MONTH: [`en-US`, {month: `long`}],
-  SHORT_TIME: [`en-US`, {hour: `numeric`, minute: `numeric`}]
-};
-
 export const Position = {
   AFTERBEGIN: `afterbegin`,
   AFTEREND: `afterend`,
@@ -28,10 +22,6 @@ export const getRandomlyReducedArray = (arr, newLength) => {
   const arrCopy = arr.slice();
   return new Array(newLength).fill(``).map(() => arrCopy.splice(Math.random() * arrCopy.length - 1, 1)[0]);
 };
-
-export const getFormattedDate = (timeStamp, ...localFormats) => localFormats.reduce((acc, it) => {
-  return `${acc} ${new Date(timeStamp).toLocaleString(...it)}`;
-}, ``);
 
 export const createElement = (html) => {
   const newElement = document.createElement(`div`);
