@@ -130,8 +130,15 @@ class TaskController {
     this._taskEdit.getElement().querySelector(`.card__repeat-toggle`).addEventListener(`click`, onRepeatTogglerClick);
     this._taskEdit.getElement().querySelector(`.card__colors-wrap`).addEventListener(`click`, onColorClick);
     this._taskEdit.getElement().querySelector(`.card__hashtag-input`).addEventListener(`keydown`, onTagEnter);
+    this._taskEdit.getElement().querySelector(`.card__delete`).addEventListener(`click`, () => {
+      this._onDataChange(null, this._taskData);
+    });
 
-    renderElement(this._fragment, Position.BEFOREEND, this._task.getElement());
+    if (!this._fragment) {
+      renderElement(this._taskContainer.getElement(), Position.AFTERBEGIN, this._taskEdit.getElement());
+    } else {
+      renderElement(this._fragment, Position.BEFOREEND, this._task.getElement());
+    }
   }
 
   _getFlatpickrCalendar() {
