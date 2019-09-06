@@ -6,11 +6,11 @@ import Sorting from './../components/sorting';
 import TaskContainer from './../components/task-container';
 import LoadmoreButton from './../components/loadmore-button';
 import NoTasksMessage from './../components/no-task-message';
-import {Position, renderElement, REPEATING_DAYS} from './../utils';
+import {Position, renderElement} from './../utils';
 import {LOAD_TASKS_NUMBER} from './../data';
-import TaskController from './task-controller';
 import Statistics from '../components/statistics';
-import moment from 'moment';
+import TaskListController from './task-list-controller';
+import SearchController from './search-controller';
 
 class BoardController {
   constructor(mainContainer, tasks) {
@@ -32,10 +32,10 @@ class BoardController {
     this._currentSortType = `default`;
     this._nowCreating = false;
 
-    this._subscriptions = [];
     this._flatpickrs = [];
     this._onDataChange = this._onDataChange.bind(this);
-    this._onChangeView = this._onChangeView.bind(this);
+
+    this._taskListController = new TaskListController(this._taskContainer, this._onDataChange, this._flatpickrs);
   }
 
   _onDataChange(newTask, oldTask) {
@@ -60,27 +60,8 @@ class BoardController {
     this._renderTaskBoard(this._sortedTasks, this._renderedTaskCount);
   }
 
-  _onChangeView() {
-    this._subscriptions.forEach((it) => it());
-  }
-
-  _renderTask(task, fragment) {
-    const taskController = new TaskController(this._taskContainer, fragment, task, this._onDataChange, this._onChangeView);
-    this._subscriptions.push(taskController.setDefaultView.bind(taskController));
-    this._flatpickrs.push(taskController.clearFlatpickr.bind(taskController));
-  }
-
-  _renderTaskCardsFragment(tasks, tasksNumber) {
-    const tasksFragment = document.createDocumentFragment();
-    const startTaskIndex = this._taskContainer.getElement().childElementCount;
-    const endTaskIndex = this._taskContainer.getElement().childElementCount + tasksNumber;
-    tasks.slice(startTaskIndex, endTaskIndex).forEach((it) => this._renderTask(it, tasksFragment));
-    renderElement(this._taskContainer.getElement(), Position.BEFOREEND, tasksFragment);
-  }
-
   _renderTaskBoard(tasks, taskCount) {
-    this._taskContainer.clearTasks();
-    this._renderTaskCardsFragment(tasks, taskCount);
+    this._taskListController.setTasks(tasks.slice(0, taskCount));
     this._checkTasksAndHideButton();
     if (this._cardsSection.getElement().querySelector(`.load-more`)) {
       this._checkTasksAndShowButton();
@@ -91,7 +72,7 @@ class BoardController {
     if (this._taskContainer.getElement().childElementCount < this._sortedTasks.length) {
       renderElement(this._cardsSection.getElement(), Position.BEFOREEND, this._loadmoreButton.getElement());
       this._loadmoreButton.getElement().addEventListener(`click`, () => {
-        this._renderTaskCardsFragment(this._sortedTasks, LOAD_TASKS_NUMBER);
+        this._taskListController.addTasks(this._sortedTasks.slice(this._renderedTaskCount, this._renderedTaskCount + LOAD_TASKS_NUMBER));
         this._renderedTaskCount = this._taskContainer.getElement().childElementCount;
         this._checkTasksAndHideButton();
       });
@@ -127,26 +108,23 @@ class BoardController {
     }
   }
 
-  _createNewTask() {
-    const newTaskData = {
-      description: ``,
-      dueDate: moment().valueOf(),
-      tags: [],
-      color: `black`,
-      repeatingDays: REPEATING_DAYS,
-      isFavorite: false,
-      isArchive: false,
-    };
-    this._nowCreating = true;
-    this._renderTask(newTaskData, null);
-  }
-
   init() {
     renderElement(this._menuContainer, Position.BEFOREEND, this._menu.getElement());
     renderElement(this._mainContainer, Position.BEFOREEND, this._search.getElement());
     renderElement(this._mainContainer, Position.BEFOREEND, this._filter.getElement());
     renderElement(this._mainContainer, Position.BEFOREEND, this._cardsSection.getElement());
     renderElement(this._mainContainer, Position.BEFOREEND, this._statistics.getElement());
+    this._searchController = new SearchController(this._mainContainer, this._search, () => {
+      this._statistics.getElement().classList.add(`visually-hidden`);
+      this._searchController.hide();
+      this._cardsSection.getElement().classList.remove(`visually-hidden`);
+    }, this._onDataChange, this._flatpickrs);
+    this._search.getElement().addEventListener(`click`, () => {
+      this._statistics.getElement().classList.add(`visually-hidden`);
+      this._cardsSection.getElement().classList.add(`visually-hidden`);
+      this._searchController.show(this._tasks);
+    });
+
 
     this._menu.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
@@ -166,7 +144,7 @@ class BoardController {
             break;
           case `control__new-task`:
             if (!this._nowCreating) {
-              this._createNewTask();
+              this._taskListController.createNewTask();
             }
             break;
         }
