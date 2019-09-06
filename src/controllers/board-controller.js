@@ -49,6 +49,7 @@ class BoardController {
       this._tasks.unshift(newTask);
       this._sortedTasks.unshift(newTask);
       this._sortTasks(this._currentSortType);
+      this._renderedTaskCount = this._taskContainer.getElement().childElementCount;
     } else {
       this._tasks[taskIndex] = newTask;
       this._sortedTasks[taskSortedIndex] = newTask;
