@@ -1,6 +1,6 @@
 import AbstractComponent from './abstract-component';
 
-class Statistics extends AbstractComponent{
+class Statistics extends AbstractComponent {
   constructor() {
     super();
   }
