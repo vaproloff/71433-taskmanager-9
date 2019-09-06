@@ -133,16 +133,21 @@ class BoardController {
           case `control__statistic`:
             this._cardsSection.getElement().classList.add(`visually-hidden`);
             this._statistics.getElement().classList.remove(`visually-hidden`);
+            this._searchController.hide();
             this._currentScreen = evt.target.control.id;
             evt.target.control.checked = true;
             break;
           case `control__task`:
             this._statistics.getElement().classList.add(`visually-hidden`);
             this._cardsSection.getElement().classList.remove(`visually-hidden`);
+            this._searchController.hide();
             this._currentScreen = evt.target.control.id;
             evt.target.control.checked = true;
             break;
           case `control__new-task`:
+            this._searchController.hide();
+            this._statistics.getElement().classList.add(`visually-hidden`);
+            this._cardsSection.getElement().classList.remove(`visually-hidden`);
             if (!this._nowCreating) {
               this._taskListController.createNewTask();
             }

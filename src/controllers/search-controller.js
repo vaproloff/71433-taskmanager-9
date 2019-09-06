@@ -31,7 +31,6 @@ class SearchController {
     renderElement(this._searchResultGroup.getElement(), Position.BEFOREEND, this._searchResultTasksContainer.getElement());
 
     this._searchResult.getElement().querySelector(`.result__back`).addEventListener(`click`, () => {
-      this._search.getElement().querySelector(`input`).value = ``;
       this._onBackButtonClick();
     });
 
@@ -90,6 +89,7 @@ class SearchController {
   }
 
   hide() {
+    this._search.getElement().querySelector(`input`).value = ``;
     this._searchResult.getElement().classList.add(`visually-hidden`);
   }
 }
