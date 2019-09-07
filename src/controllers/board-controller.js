@@ -41,24 +41,18 @@ class BoardController {
   _onDataChange(newTask, oldTask) {
     this._nowCreating = false;
     const taskIndex = this._tasks.findIndex((it) => it === oldTask);
-    const taskSortedIndex = this._sortedTasks.findIndex((it) => it === oldTask);
     if (!newTask) {
-      delete this._tasks[taskIndex];
-      delete this._sortedTasks[taskSortedIndex];
+      this._tasks.splice(taskIndex, 1);
     } else if (taskIndex === -1) {
       this._tasks.unshift(newTask);
-      this._sortedTasks.unshift(newTask);
-      this._sortTasks(this._currentSortType);
       this._renderedTaskCount = this._taskContainer.getElement().childElementCount;
     } else {
       this._tasks[taskIndex] = newTask;
-      this._sortedTasks[taskSortedIndex] = newTask;
     }
-    this._sortedTasks = this._sortedTasks.filter((it) => !it.isArchive);
     this._filter.refreshFilters(this._tasks);
-
     this._flatpickrs.forEach((it) => it());
-    this._renderTaskBoard(this._sortedTasks, this._renderedTaskCount);
+    this._sortTasks();
+    this._renderTaskBoard(this._sortedTasks.filter((it) => !it.isArchive), this._renderedTaskCount);
   }
 
   _renderTaskBoard(tasks, taskCount) {
@@ -86,16 +80,16 @@ class BoardController {
     }
   }
 
-  _sortTasks(sortType) {
-    switch (sortType) {
+  _sortTasks() {
+    switch (this._currentSortType) {
       case `date-up`:
-        this._sortedTasks = this._sortedTasks.slice().sort((a, b) => a.dueDate - b.dueDate);
+        this._sortedTasks = this._tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
         break;
       case `date-down`:
-        this._sortedTasks = this._sortedTasks.slice().sort((a, b) => b.dueDate - a.dueDate);
+        this._sortedTasks = this._tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
         break;
       case `default`:
-        this._sortedTasks = this._tasks.filter((it) => !it.isArchive);
+        this._sortedTasks = this._tasks.slice();
         break;
     }
   }
@@ -104,8 +98,8 @@ class BoardController {
     evt.preventDefault();
     if (evt.target.tagName === `A`) {
       this._currentSortType = evt.target.dataset.sortType;
-      this._sortTasks(this._currentSortType);
-      this._renderTaskBoard(this._sortedTasks, this._renderedTaskCount);
+      this._sortTasks();
+      this._renderTaskBoard(this._sortedTasks.filter((it) => !it.isArchive), this._renderedTaskCount);
     }
   }
 
@@ -150,8 +144,11 @@ class BoardController {
             this._statistics.getElement().classList.add(`visually-hidden`);
             this._cardsSection.getElement().classList.remove(`visually-hidden`);
             if (!this._nowCreating) {
+              this._nowCreating = true;
               this._taskListController.createNewTask();
             }
+            this._menu.getElement().querySelector(`#control__task`).checked = true;
+            this._currentScreen = `control__task`;
             break;
         }
       }

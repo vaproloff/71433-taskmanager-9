@@ -34,7 +34,7 @@ class SearchController {
       this._onBackButtonClick();
     });
 
-    this._search.getElement().querySelector(`input`).addEventListener(`keyup`, (evt) => {
+    const onSearchKeyup = (evt) => {
       const {value} = evt.target;
       let tasksFound;
       if (value.length >= 3) {
@@ -65,6 +65,15 @@ class SearchController {
       } else {
         this._showSearchResult(value, this._tasks);
       }
+    };
+
+    let searchDebounceTimeout;
+
+    this._search.getElement().querySelector(`input`).addEventListener(`keyup`, (evt) => {
+      clearTimeout(searchDebounceTimeout);
+      searchDebounceTimeout = setTimeout(() => {
+        onSearchKeyup(evt);
+      }, 500);
     });
   }
 

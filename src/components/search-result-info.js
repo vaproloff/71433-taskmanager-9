@@ -11,7 +11,7 @@ class SearchResultInfo extends AbstractComponent {
   getTemplate() {
     return `
       <h2 class="result__title">
-        ${this._title}<span class="result__count">${this._count}</span>
+        ${this._title}<span class="result__count">${this._title === `` ? 0 : this._count}</span>
       </h2>`;
   }
 }
