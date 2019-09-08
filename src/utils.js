@@ -9,6 +9,7 @@ export const REPEATING_DAYS = {
 };
 
 export const Position = {
+  BEFOREBEGIN: `beforebegin`,
   AFTERBEGIN: `afterbegin`,
   AFTEREND: `afterend`,
   BEFOREEND: `beforeend`
@@ -35,6 +36,9 @@ export const createElement = (html) => {
 
 export const renderElement = (container, place, element) => {
   switch (place) {
+    case Position.BEFOREBEGIN:
+      container.before(element);
+      break;
     case Position.AFTERBEGIN:
       container.prepend(element);
       break;
